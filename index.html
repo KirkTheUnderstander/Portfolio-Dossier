@@ -131,14 +131,13 @@
     transition: color .25s ease;
   }
   .brand:hover { color: var(--ink); }
-  .brand-invader {
-    color: var(--accent);
+  .brand-invader-slot {
+    display: inline-block;
+    width: 26px;
+    height: 19px;
     flex-shrink: 0;
-    display: block;
-    transition: transform .35s cubic-bezier(.2,.8,.2,1);
-  }
-  .brand:hover .brand-invader {
-    transform: translateY(-2px) rotate(-4deg);
+    /* Intentionally transparent — the real invader lives in #invader-live
+       and rests on top of this slot when scrollY is near 0 */
   }
   .brand-text { display: inline-block; }
   .nav-links {
@@ -519,7 +518,7 @@
   }
   .stat-number .unit {
     font-size: 0.45em;
-    color: var(--mute);
+    color: var(--ink);
     font-style: italic;
     margin-left: 4px;
   }
@@ -723,6 +722,31 @@
     border: 1px solid var(--accent);
     margin-bottom: 20px;
   }
+  .case-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .read-time {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .read-time::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--mute);
+    opacity: 0.5;
+  }
+
   .case-title {
     font-family: var(--serif);
     font-size: clamp(34px, 4.6vw, 62px);
@@ -1306,6 +1330,38 @@
   }
 
   /* ===============================================
+     LIVE INVADER (home in navbar — travels along the top edge on scroll)
+     =============================================== */
+  .invader-live {
+    position: fixed;
+    top: 0; left: 0;
+    width: 26px;
+    height: 19px;
+    color: var(--accent);
+    z-index: 105;
+    pointer-events: none;
+    /* Transform is set in JS every frame for smooth motion */
+    will-change: transform;
+    filter: drop-shadow(0 2px 4px rgba(199,62,29,0.25));
+  }
+  .invader-live svg { display: block; width: 100%; height: 100%; }
+  /* Subtle wobble while traveling */
+  .invader-live.traveling { animation: invader-wobble 1.6s ease-in-out infinite; }
+  @keyframes invader-wobble {
+    0%, 100% { margin-top: 0; }
+    50%      { margin-top: -2px; }
+  }
+  /* Invader becomes slightly smaller during travel (it "flies") */
+  .invader-live.traveling {
+    width: 22px;
+    height: 16px;
+    transition: width .3s ease, height .3s ease;
+  }
+  .invader-live {
+    transition: width .3s ease, height .3s ease;
+  }
+
+  /* ===============================================
      COPY TOAST
      =============================================== */
   .toast {
@@ -1460,8 +1516,115 @@
   .reveal.in { opacity: 1; transform: none; }
 
   /* ===============================================
-     REDUCED MOTION — respect system preference
+     MAGIC CURSOR (desktop only)
      =============================================== */
+  .cursor-ring, .cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+  .cursor-ring {
+    width: 30px; height: 30px;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width .3s cubic-bezier(.2,.8,.2,1),
+                height .3s cubic-bezier(.2,.8,.2,1),
+                border-color .3s ease,
+                background .3s ease,
+                opacity .3s ease;
+  }
+  .cursor-dot {
+    width: 5px; height: 5px;
+    background: var(--ink-soft);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: background .3s ease, opacity .3s ease;
+  }
+  .cursor-ring.visible, .cursor-dot.visible { opacity: 1; }
+
+  /* Hover: accent for anything interactive (links, buttons, visuals) */
+  .cursor-ring.hover {
+    width: 54px; height: 54px;
+    border-color: var(--accent);
+    background: rgba(199,62,29, 0.08);
+  }
+  .cursor-dot.hover {
+    background: var(--accent);
+    opacity: 0;
+  }
+
+  /* On dark sections (manifesto, contact) invert to cream for contrast */
+  .manifesto, .contact { }
+  .on-dark .cursor-ring { border-color: #F1ECE2; }
+  .on-dark .cursor-dot  { background: #F1ECE2; }
+  .on-dark .cursor-ring.hover {
+    border-color: #E07A70;
+    background: rgba(224,122,112, 0.12);
+  }
+  .on-dark .cursor-dot.hover { background: #E07A70; }
+
+  /* Hide native cursor on pointer-fine devices */
+  @media (hover: hover) and (pointer: fine) {
+    html.has-magic-cursor, html.has-magic-cursor * {
+      cursor: none !important;
+    }
+  }
+  .intro {
+    position: fixed;
+    inset: 0;
+    background: var(--paper);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: opacity .6s ease .25s;
+  }
+  .intro.done {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .intro-invader {
+    color: var(--accent);
+    opacity: 0;
+    transform: translateY(-180px) scale(0.6);
+  }
+  .intro.play .intro-invader {
+    animation: intro-drop 1100ms cubic-bezier(.3,1.5,.4,1) forwards;
+  }
+  .intro-label {
+    position: absolute;
+    bottom: 14%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--mute);
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity .5s ease .8s;
+  }
+  .intro.play .intro-label { opacity: 1; }
+  @keyframes intro-drop {
+    0%   { opacity: 0; transform: translateY(-200px) scale(0.55) rotate(-8deg); }
+    55%  { opacity: 1; transform: translateY(10px)   scale(1.02) rotate(2deg); }
+    75%  {             transform: translateY(-6px)  scale(0.98) rotate(-1deg); }
+    100% { opacity: 1; transform: translateY(0)     scale(1)    rotate(0); }
+  }
+  /* When intro runs, slightly delay hero reveal for impact */
+  body.intro-active .hero > * { opacity: 0; }
+  body.intro-active.intro-settled .hero > * {
+    animation: hero-fade-up .8s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  @keyframes hero-fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -1476,6 +1639,8 @@
     .hero-mark { transform: none !important; }
     .headline-card { transform: none !important; }
     body::before { display: none; }
+    .intro { display: none !important; }
+    body.intro-active .hero > * { opacity: 1 !important; animation: none !important; }
   }
 
   /* ===============================================
@@ -1503,31 +1668,47 @@
 <body>
 
 <!-- ===============================================
+     INTRO OVERLAY (first visit)
+     =============================================== -->
+<div class="intro" id="intro" aria-hidden="true">
+  <svg class="intro-invader" width="160" height="116" viewBox="0 0 11 8" shape-rendering="crispEdges" fill="currentColor">
+    <rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/>
+    <rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/>
+    <rect x="2" y="2" width="7" height="1"/>
+    <rect x="1" y="3" width="2" height="1"/><rect x="4" y="3" width="3" height="1"/><rect x="8" y="3" width="2" height="1"/>
+    <rect x="0" y="4" width="11" height="1"/>
+    <rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/>
+    <rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/>
+    <rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/>
+  </svg>
+  <div class="intro-label">Kirill Lifanov · MMXXVI</div>
+</div>
+
+<!-- Magic cursor elements -->
+<div class="cursor-ring" id="cursor-ring"></div>
+<div class="cursor-dot" id="cursor-dot"></div>
+
+<!-- ===============================================
      SCROLL PROGRESS + TOP BAR
      =============================================== -->
 <div class="scroll-progress" id="scroll-progress"></div>
+<div class="invader-live" id="invader-live" aria-hidden="true">
+  <svg viewBox="0 0 11 8" shape-rendering="crispEdges" fill="currentColor">
+    <rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/>
+    <rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/>
+    <rect x="2" y="2" width="7" height="1"/>
+    <rect x="1" y="3" width="2" height="1"/><rect x="4" y="3" width="3" height="1"/><rect x="8" y="3" width="2" height="1"/>
+    <rect x="0" y="4" width="11" height="1"/>
+    <rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/>
+    <rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/>
+    <rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/>
+  </svg>
+</div>
 
 <nav class="topbar" id="topbar">
   <div class="topbar-inner">
     <a href="#top" class="brand" aria-label="Главная">
-      <svg class="brand-invader" width="26" height="19" viewBox="0 0 11 8" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true" focusable="false" fill="currentColor">
-        <!-- Row 0: antennas -->
-        <rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/>
-        <!-- Row 1 -->
-        <rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/>
-        <!-- Row 2: top of head -->
-        <rect x="2" y="2" width="7" height="1"/>
-        <!-- Row 3: eyes -->
-        <rect x="1" y="3" width="2" height="1"/><rect x="4" y="3" width="3" height="1"/><rect x="8" y="3" width="2" height="1"/>
-        <!-- Row 4: full body -->
-        <rect x="0" y="4" width="11" height="1"/>
-        <!-- Row 5 -->
-        <rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/>
-        <!-- Row 6 -->
-        <rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/>
-        <!-- Row 7: legs -->
-        <rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/>
-      </svg>
+      <span class="brand-invader-slot" aria-hidden="true"></span>
       <span class="brand-text">Kirill&nbsp;Lifanov</span>
     </a>
     <div class="nav-links">
@@ -1745,7 +1926,7 @@
     <div class="case-header reveal">
       <div class="case-index">01</div>
       <div class="case-title-block">
-        <span class="case-tag">Brand Safety · Автоматизация</span>
+        <div class="case-meta"><span class="case-tag">Brand Safety · Автоматизация</span><span class="read-time">~3 мин чтения</span></div>
         <h2 class="case-title">
           Закрыл юридический риск&nbsp;<em>в 3,2&nbsp;млн&nbsp;₽</em> за 30&nbsp;минут
         </h2>
@@ -1754,13 +1935,13 @@
 
     <div class="case-body">
       <div class="case-star">
-        <div>
+        <div data-rail-case="case-01" data-rail-step="s">
           <div class="star-block-label">Situation</div>
           <div class="star-block-text">
             Весной 2025-го редакцию «Петербургского дневника» начал атаковать правообладатель фотоконтента: автоматический парсер сканировал соцсети на нарушения, каждый иск — <strong>10–50&nbsp;тыс.&nbsp;₽</strong>. В зоне риска — архив из десятков тысяч публикаций за 5–6&nbsp;лет на четырёх платформах (VK, Telegram, OK, Facebook*).
           </div>
         </div>
-        <div>
+        <div data-rail-case="case-01" data-rail-step="t">
           <div class="star-block-label">Task</div>
           <div class="star-block-text">
             Исходная постановка от менеджмента: <em>«почистить всё за пару дней»</em>. Ручной объём — 60+&nbsp;дней. И даже это не остановило бы роботов правообладателя в будущем.
@@ -1769,7 +1950,7 @@
       </div>
 
       <div class="case-star">
-        <div>
+        <div data-rail-case="case-01" data-rail-step="a">
           <div class="star-block-label">Action</div>
           <div class="star-block-text">
             <ul>
@@ -1785,7 +1966,7 @@
           «Если на вас натравили <em>робота</em>, бесполезно увеличивать штат. Берите своего робота и натравливайте его в ответ.»
         </div>
 
-        <div>
+        <div data-rail-case="case-01" data-rail-step="r">
           <div class="star-block-label">Result</div>
           <div class="case-metrics">
             <div class="case-metric">
@@ -1853,7 +2034,7 @@
     <div class="case-header reveal">
       <div class="case-index">02</div>
       <div class="case-title-block">
-        <span class="case-tag">AI-production · Prompt Engineering</span>
+        <div class="case-meta"><span class="case-tag">AI-production · Prompt Engineering</span><span class="read-time">~3 мин чтения</span></div>
         <h2 class="case-title">
           Перевёл редакцию на&nbsp;<em>AI-ассистирование</em> и ускорил производство контента в&nbsp;3–10 раз
         </h2>
@@ -1862,13 +2043,13 @@
 
     <div class="case-body">
       <div class="case-star">
-        <div>
+        <div data-rail-case="case-02" data-rail-step="s">
           <div class="star-block-label">Situation</div>
           <div class="star-block-text">
             Перекрыв кислород судебным троллям (Кейс&nbsp;01), мы создали проблему самой редакции: брать чужие фото больше нельзя, а план в <strong>16–30&nbsp;постов на 4&nbsp;площадках</strong> остался. Выбор был простой: раздувать штат дизайнеров и смириться с падением охватов. Или…
           </div>
         </div>
-        <div>
+        <div data-rail-case="case-02" data-rail-step="t">
           <div class="star-block-label">Task</div>
           <div class="star-block-text">
             Сохранить объёмы и качество контента без найма новых людей. Найти легальную и масштабируемую альтернативу стоковому визуалу.
@@ -1877,7 +2058,7 @@
       </div>
 
       <div class="case-star">
-        <div>
+        <div data-rail-case="case-02" data-rail-step="a">
           <div class="star-block-label">Action</div>
           <div class="star-block-text">
             <ul>
@@ -1892,7 +2073,7 @@
           «Любой запрет — просто смена <em>инструментария</em>. Нет стоковых фото? Будем генерировать свои. <em>Быстрее</em> и <em>безопаснее</em>.»
         </div>
 
-        <div>
+        <div data-rail-case="case-02" data-rail-step="r">
           <div class="star-block-label">Result</div>
           <div class="case-metrics">
             <div class="case-metric">
@@ -1985,7 +2166,7 @@
     <div class="case-header reveal">
       <div class="case-index">03</div>
       <div class="case-title-block">
-        <span class="case-tag">Virality · Headline Architecture</span>
+        <div class="case-meta"><span class="case-tag">Virality · Headline Architecture</span><span class="read-time">~3 мин чтения</span></div>
         <h2 class="case-title">
           От медианных 6–10&nbsp;тыс. просмотров — к&nbsp;<em>700&nbsp;000+</em> на одном посте
         </h2>
@@ -1994,13 +2175,13 @@
 
     <div class="case-body">
       <div class="case-star">
-        <div>
+        <div data-rail-case="case-03" data-rail-step="s">
           <div class="star-block-label">Situation</div>
           <div class="star-block-text">
             Средний региональный пост собирает <strong>20–60 лайков</strong> и благополучно умирает. Чтобы пробить баннерную слепоту — нужен триггер. Выход за эти рамки требует нестандартной упаковки инфоповода, но строго внутри правового и репутационного поля издания.
           </div>
         </div>
-        <div>
+        <div data-rail-case="case-03" data-rail-step="t">
           <div class="star-block-label">Task</div>
           <div class="star-block-text">
             Найти баланс между кликбейтом и Brand Safety. Упаковать локальную скуку в виральный формат, не подставив редакцию репутационно и юридически.
@@ -2009,7 +2190,7 @@
       </div>
 
       <div class="case-star">
-        <div>
+        <div data-rail-case="case-03" data-rail-step="a">
           <div class="star-block-label">Action</div>
           <div class="star-block-text">
             <ul>
@@ -2025,7 +2206,7 @@
           «Виральность — это не удача, это <em>социальная инженерия</em>. Фраза «Папа, держись» мгновенно запустила в комментариях вечный спор о том, кому тяжелее в декрете. Алгоритмы VK увидели живую дискуссию и сами выкинули пост в рекомендации.»
         </div>
 
-        <div>
+        <div data-rail-case="case-03" data-rail-step="r">
           <div class="star-block-label">Result</div>
           <div class="case-metrics">
             <div class="case-metric">
@@ -2333,12 +2514,108 @@
      SCRIPTS
      =============================================== -->
 <script>
-  /* ---------- Reduced motion check ---------- */
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* ---------- Shared utilities ---------- */
+  const lerp = (a, b, n) => a + (b - a) * n;
+  const easeInOut = (t) => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
 
-  /* ---------- Topbar scroll state + progress bar + scroll-spy ---------- */
+  /* ---------- Feature detection ---------- */
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ---------- INTRO overlay (first visit per session) ---------- */
+  (function () {
+    const intro = document.getElementById('intro');
+    const seenKey = 'kl_intro_seen_v1';
+    const alreadySeen = sessionStorage.getItem(seenKey);
+
+    if (prefersReducedMotion || alreadySeen) {
+      intro.style.display = 'none';
+      return;
+    }
+
+    document.body.classList.add('intro-active');
+    // Kick off animation on next frame
+    requestAnimationFrame(() => { intro.classList.add('play'); });
+
+    // Fade out after invader drop + slight pause, then reveal hero
+    setTimeout(() => {
+      intro.classList.add('done');
+      document.body.classList.add('intro-settled');
+      sessionStorage.setItem(seenKey, '1');
+    }, 1400);
+
+    // Final cleanup: remove overlay after fade
+    setTimeout(() => {
+      intro.style.display = 'none';
+      document.body.classList.remove('intro-active');
+    }, 2200);
+  })();
+
+  /* ---------- MAGIC CURSOR ---------- */
+  if (isFinePointer && !prefersReducedMotion) {
+    const ring = document.getElementById('cursor-ring');
+    const dot  = document.getElementById('cursor-dot');
+    document.documentElement.classList.add('has-magic-cursor');
+
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let rx = mx, ry = my;
+    let visible = false;
+
+    document.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
+      if (!visible) {
+        ring.classList.add('visible');
+        dot.classList.add('visible');
+        visible = true;
+      }
+    });
+    document.addEventListener('mouseleave', () => {
+      ring.classList.remove('visible');
+      dot.classList.remove('visible');
+      visible = false;
+    });
+
+    // Smooth lerp for outer ring (uses global `lerp`)
+    (function loop() {
+      rx = lerp(rx, mx, 0.18);
+      ry = lerp(ry, my, 0.18);
+      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+      requestAnimationFrame(loop);
+    })();
+
+    // Hover states for interactive elements
+    const hoverSelectors = 'a, button, .reach-card, .headline-card, .tool-cat, .contact-link, .egg-trigger, .burger, .visual, [data-zoom]';
+    document.querySelectorAll(hoverSelectors).forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        ring.classList.add('hover');
+        dot.classList.add('hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.classList.remove('hover');
+        dot.classList.remove('hover');
+      });
+    });
+
+    // Auto-invert cursor colour over dark sections
+    const darkSections = document.querySelectorAll('.manifesto, .contact, footer, .intro');
+    const darkObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        // Section is "under cursor" when it crosses the upper half of viewport
+        const underCursor = e.isIntersecting && e.intersectionRatio > 0.15;
+        e.target.classList.toggle('_cursor-over', underCursor);
+      });
+      const anyDark = document.querySelector('._cursor-over');
+      document.documentElement.classList.toggle('on-dark', !!anyDark);
+    }, { threshold: [0, 0.15, 0.5, 1] });
+    darkSections.forEach(s => darkObserver.observe(s));
+  }
+
+  /* ---------- TOPBAR / PROGRESS / LIVE INVADER / SCROLL-SPY / PARALLAX ---------- */
   const topbar = document.getElementById('topbar');
   const progress = document.getElementById('scroll-progress');
+  const invaderLive = document.getElementById('invader-live');
+  const invaderSlot = document.querySelector('.brand-invader-slot');
   const heroMark = document.querySelector('.hero-mark');
 
   // Scroll-spy setup
@@ -2350,14 +2627,50 @@
     if (section) sectionMap.set(id, { section, link: a });
   });
 
+  // Invader: smooth interpolation between "home" (inside logo) and "travel" (along top edge)
+  const INVADER_HOME_W = 26, INVADER_HOME_H = 19;
+  const INVADER_FLY_W = 22,  INVADER_FLY_H = 16;
+
+  const getHomePosition = () => {
+    if (!invaderSlot) return { x: 0, y: 0 };
+    const r = invaderSlot.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  };
+
   let scrollTicking = false;
   const onScroll = () => {
     const y = window.scrollY;
     topbar.classList.toggle('scrolled', y > 20);
 
     const h = document.documentElement;
-    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
-    progress.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    const maxScroll = h.scrollHeight - h.clientHeight;
+    const pct = Math.min(100, Math.max(0, (h.scrollTop / maxScroll) * 100));
+    progress.style.width = pct + '%';
+
+    /* === LIVE INVADER positioning ===
+       When scrollY ≤ 10px: sits on top of the brand-invader-slot (home).
+       When scrollY > 60px: travels along the top edge, x = pct% of viewport.
+       Between 10 and 60: smooth blend. */
+    if (invaderLive) {
+      const travelAmount = Math.min(1, Math.max(0, (y - 10) / 50));
+      const traveling = travelAmount > 0.95;
+      invaderLive.classList.toggle('traveling', traveling);
+
+      const home = getHomePosition();
+      const travelX = (pct / 100) * window.innerWidth;
+      const travelY = 10; // right above the scroll-progress bar (bar is at top:0 height:2)
+      const currentW = lerp(INVADER_HOME_W, INVADER_FLY_W, easeInOut(travelAmount));
+      const currentH = lerp(INVADER_HOME_H, INVADER_FLY_H, easeInOut(travelAmount));
+
+      const targetX = lerp(home.x, travelX, easeInOut(travelAmount));
+      const targetY = lerp(home.y, travelY, easeInOut(travelAmount));
+
+      invaderLive.style.width  = currentW + 'px';
+      invaderLive.style.height = currentH + 'px';
+      // translate so that invader centres on (targetX, targetY)
+      invaderLive.style.transform =
+        `translate(${targetX - currentW / 2}px, ${targetY - currentH / 2}px)`;
+    }
 
     // Parallax (only when motion is OK)
     if (!prefersReducedMotion && heroMark && y < 800) {
@@ -2382,9 +2695,12 @@
       scrollTicking = true;
     }
   }, { passive: true });
-  onScroll();
+  // Also reposition on resize (brand-slot could move)
+  window.addEventListener('resize', onScroll, { passive: true });
+  // Initial call after layout settles
+  requestAnimationFrame(() => requestAnimationFrame(onScroll));
 
-  /* ---------- Burger / mobile menu ---------- */
+  /* ---------- BURGER / MOBILE MENU ---------- */
   const burger = document.getElementById('burger');
   const mobileMenu = document.getElementById('mobile-menu');
   const toggleMobile = (force) => {
@@ -2395,12 +2711,11 @@
     document.body.style.overflow = willOpen ? 'hidden' : '';
   };
   burger.addEventListener('click', () => toggleMobile());
-  // Close on link tap
   document.querySelectorAll('[data-mm]').forEach(a => {
     a.addEventListener('click', () => toggleMobile(false));
   });
 
-  /* ---------- Reveal on scroll ---------- */
+  /* ---------- REVEAL on scroll ---------- */
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -2411,14 +2726,13 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal, .exp-item').forEach(el => io.observe(el));
 
-  /* ---------- Count-up animation on stats ---------- */
+  /* ---------- COUNT-UP animation on stats ---------- */
   const animateCountUp = (el) => {
     const target = el.getAttribute('data-target');
     const suffix = el.getAttribute('data-suffix') || '';
     const decimal = el.getAttribute('data-decimal') === 'true';
     const text = el.getAttribute('data-text');
 
-    // Strings like "×3–10" or "7–20 → 1–5 мин" — just reveal as-is with fade
     if (text) {
       el.textContent = '';
       requestAnimationFrame(() => {
@@ -2440,13 +2754,11 @@
     const start = performance.now();
     const format = (v) => {
       if (decimal) return v.toFixed(1).replace('.', ',');
-      // Russian number formatting: thousands separators
       return Math.round(v).toLocaleString('ru-RU').replace(/,/g, ' ');
     };
     const tick = (now) => {
       const elapsed = now - start;
       const t = Math.min(1, elapsed / duration);
-      // easeOutExpo
       const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
       el.textContent = format(end * eased) + suffix;
       if (t < 1) requestAnimationFrame(tick);
@@ -2463,30 +2775,27 @@
   }, { threshold: 0.4 });
   document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
 
-  /* ---------- Magnetic CTA buttons (desktop only, subtle) ---------- */
-  if (!prefersReducedMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  /* ---------- MAGNETIC CTA + TILT cards (desktop only, no reduced motion) ---------- */
+  if (!prefersReducedMotion && isFinePointer) {
     document.querySelectorAll('.btn').forEach(btn => {
-      const strength = 0.18; // how strongly the button follows the cursor (max ~6px)
+      const strength = 0.18;
       btn.addEventListener('mousemove', (e) => {
         const rect = btn.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
         btn.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
       });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = '';
-      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
     });
 
-    /* ---------- Tilt on headline cards ---------- */
     document.querySelectorAll('.headline-card').forEach(card => {
-      const maxTilt = 7; // degrees
+      const maxTilt = 7;
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;  // 0..1
-        const y = (e.clientY - rect.top) / rect.height;  // 0..1
-        const rotateY = (x - 0.5) * 2 * maxTilt;   // left-right tilt
-        const rotateX = -(y - 0.5) * 2 * maxTilt;  // up-down tilt (inverted)
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const rotateY = (x - 0.5) * 2 * maxTilt;
+        const rotateX = -(y - 0.5) * 2 * maxTilt;
         card.classList.add('is-tilting');
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(6px)`;
       });
@@ -2497,7 +2806,7 @@
     });
   }
 
-  /* ---------- Lightbox ---------- */
+  /* ---------- LIGHTBOX ---------- */
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
   document.querySelectorAll('[data-zoom]').forEach(el => {
@@ -2521,7 +2830,7 @@
     }
   });
 
-  /* ---------- Toast + copy-to-clipboard on email ---------- */
+  /* ---------- TOAST + COPY-TO-CLIPBOARD ---------- */
   const toast = document.getElementById('toast');
   let toastTimer = null;
   const showToast = (msg) => {
@@ -2530,33 +2839,36 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
   };
+  const copyText = (text) => {
+    if (navigator.clipboard) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); resolve(); }
+      catch (err) { reject(err); }
+      document.body.removeChild(ta);
+    });
+  };
+
+  // Email copy
   document.querySelectorAll('.contact-link[data-copy]').forEach(link => {
     link.addEventListener('click', (e) => {
       if (link.getAttribute('href').startsWith('mailto:')) {
         e.preventDefault();
-        const val = link.getAttribute('data-copy');
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(val).then(() => {
-            showToast('Скопировано');
-          }).catch(() => {
-            window.location.href = link.getAttribute('href');
-          });
-        } else {
-          const ta = document.createElement('textarea');
-          ta.value = val;
-          ta.style.position = 'fixed';
-          ta.style.opacity = '0';
-          document.body.appendChild(ta);
-          ta.select();
-          try { document.execCommand('copy'); showToast('Скопировано'); }
-          catch (err) { window.location.href = link.getAttribute('href'); }
-          document.body.removeChild(ta);
-        }
+        copyText(link.getAttribute('data-copy'))
+          .then(() => showToast('Скопировано'))
+          .catch(() => { window.location.href = link.getAttribute('href'); });
       }
     });
   });
 
-  /* ---------- Easter egg modal ---------- */
+  /* ---------- EASTER EGG MODAL ---------- */
   const eggTrigger = document.getElementById('egg-trigger');
   const eggModal = document.getElementById('egg-modal');
   const eggClose = document.getElementById('egg-close');
@@ -2566,7 +2878,7 @@
   eggClose.addEventListener('click', closeEgg);
   eggModal.addEventListener('click', (e) => { if (e.target === eggModal) closeEgg(); });
 
-  /* ---------- Konami code: ↑↑↓↓←→←→BA → pixel fireworks ---------- */
+  /* ---------- KONAMI CODE ---------- */
   (function() {
     const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
     let pos = 0;
@@ -2588,7 +2900,6 @@
       container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:500;overflow:hidden;';
       document.body.appendChild(container);
 
-      // Short on-screen hint
       const hint = document.createElement('div');
       hint.textContent = '⬆ UP UP DOWN DOWN ⬇';
       hint.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:JetBrains Mono,monospace;font-size:14px;letter-spacing:0.2em;color:#c73e1d;background:rgba(14,13,11,0.88);padding:14px 24px;border:1px solid #c73e1d;z-index:501;opacity:0;transition:opacity .3s ease;';
@@ -2596,7 +2907,6 @@
       requestAnimationFrame(() => { hint.style.opacity = '1'; });
       setTimeout(() => { hint.style.opacity = '0'; }, 1400);
 
-      // Burst of pixel particles from multiple origins
       const origins = [
         { x: window.innerWidth * 0.25, y: window.innerHeight * 0.5 },
         { x: window.innerWidth * 0.5,  y: window.innerHeight * 0.4 },
@@ -2605,7 +2915,6 @@
       origins.forEach((origin, i) => {
         setTimeout(() => spawnBurst(container, origin, colors), i * 180);
       });
-
       setTimeout(() => container.remove(), 3500);
     }
 
@@ -2613,17 +2922,15 @@
       const count = 36;
       for (let i = 0; i < count; i++) {
         const p = document.createElement('div');
-        const size = 4 + Math.floor(Math.random() * 5); // 4–8px pixel blocks
+        const size = 4 + Math.floor(Math.random() * 5);
         const color = colors[Math.floor(Math.random() * colors.length)];
         p.style.cssText = `position:absolute;left:${origin.x}px;top:${origin.y}px;width:${size}px;height:${size}px;background:${color};will-change:transform,opacity;`;
         container.appendChild(p);
-
         const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3;
         const velocity = 180 + Math.random() * 220;
         const dx = Math.cos(angle) * velocity;
         const dy = Math.sin(angle) * velocity;
         const rotate = (Math.random() - 0.5) * 720;
-
         p.animate([
           { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
           { transform: `translate(${dx * 0.4}px, ${dy * 0.4 - 20}px) rotate(${rotate * 0.4}deg)`, opacity: 1, offset: 0.3 },
