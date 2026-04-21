@@ -57,7 +57,12 @@
      RESET & BASE
      =============================================== */
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+    overflow-x: clip;
+    overscroll-behavior-x: contain;
+  }
   body {
     background: var(--paper);
     color: var(--ink);
@@ -66,7 +71,8 @@
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: clip;
+    overscroll-behavior-x: contain;
     position: relative;
   }
   /* Paper grain — tiny SVG noise overlay */
@@ -509,6 +515,7 @@
     letter-spacing: -0.03em;
     font-variation-settings: "opsz" 144;
     font-weight: 400;
+    color: var(--accent);
   }
   .stat-number .unit {
     font-size: 0.45em;
@@ -1176,11 +1183,7 @@
     background: var(--dark);
     color: #E8E2D4;
     border-top: none !important;
-    margin: 0 -9999px;
-    padding-left: 9999px;
-    padding-right: 9999px;
   }
-  .contact .container { padding: 0 var(--gutter); }
   .contact .section-number { color: #9C9589; }
   .contact-lead {
     font-family: var(--serif);
