@@ -92,12 +92,28 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   .brand {
-    font-family: var(--serif);
-    font-size: 22px;
-    font-style: italic;
-    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: color .25s ease;
   }
-  .brand::first-letter { color: var(--accent); }
+  .brand:hover { color: var(--ink); }
+  .brand-invader {
+    color: var(--accent);
+    flex-shrink: 0;
+    display: block;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .brand:hover .brand-invader {
+    transform: translateY(-2px) rotate(-4deg);
+  }
+  .brand-text { display: inline-block; }
   .nav-links {
     display: flex; gap: clamp(16px, 2.5vw, 36px);
     font-size: 14px;
@@ -305,44 +321,33 @@
   }
   .btn:hover .arrow { transform: translateX(4px); }
 
-  /* Hero photo (oval mask) */
+  /* Hero photo (oval mask via clip-path — no subpixel gap on the edge) */
   .hero-mark {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
     gap: 28px;
+    will-change: transform;
   }
   .hero-photo {
     position: relative;
     width: min(460px, 95%);
     aspect-ratio: 4 / 5;
-    border-radius: 50% / 50%;
-    overflow: hidden;
+    clip-path: ellipse(49.5% 49.5% at 50% 50%);
+    -webkit-clip-path: ellipse(49.5% 49.5% at 50% 50%);
     background: var(--paper-deep);
-    box-shadow:
-      0 1px 0 rgba(0,0,0,.08),
-      inset 0 0 0 1px rgba(0,0,0,.06),
-      0 30px 60px -20px rgba(0,0,0,0.25);
-    will-change: transform;
+    filter: drop-shadow(0 30px 40px rgba(0,0,0,0.18));
   }
   .hero-photo img {
     width: 100%; height: 100%;
     object-fit: cover;
-    object-position: 50% 20%;
+    object-position: 50% 18%;
     display: block;
     filter: contrast(1.02) saturate(0.94);
     transition: transform 1.2s cubic-bezier(.2,.8,.2,1);
   }
   .hero-photo:hover img { transform: scale(1.04); }
-  .hero-photo::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50% / 50%;
-    box-shadow: inset 0 0 120px rgba(26,26,26,0.12);
-    pointer-events: none;
-  }
 
   .monogram-caption {
     display: flex;
@@ -1044,12 +1049,20 @@
   }
 
   /* ===============================================
-     CONTACT
+     CONTACT (dark)
      =============================================== */
   .contact {
     padding: var(--section-pad) 0;
     text-align: center;
+    background: var(--dark);
+    color: #E8E2D4;
+    border-top: none !important;
+    margin: 0 -9999px;
+    padding-left: 9999px;
+    padding-right: 9999px;
   }
+  .contact .container { padding: 0 var(--gutter); }
+  .contact .section-number { color: #9C9589; }
   .contact-lead {
     font-family: var(--serif);
     font-size: clamp(36px, 5.5vw, 88px);
@@ -1059,8 +1072,9 @@
     letter-spacing: -0.02em;
     font-variation-settings: "opsz" 144;
     font-weight: 400;
+    color: #F1ECE2;
   }
-  .contact-lead em { color: var(--accent); font-style: italic; }
+  .contact-lead em { color: #E07A70; font-style: italic; }
   .contact-links {
     display: flex; justify-content: center;
     gap: clamp(30px, 6vw, 80px);
@@ -1076,23 +1090,27 @@
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--mute);
+    color: #9C9589;
   }
   .contact-link-value {
     font-family: var(--serif);
     font-size: clamp(22px, 2.5vw, 30px);
     letter-spacing: -0.01em;
+    color: #F1ECE2;
     border-bottom: 1px solid transparent;
-    transition: border-color .25s ease;
+    transition: border-color .25s ease, color .25s ease;
     font-variation-settings: "opsz" 144;
     cursor: pointer;
   }
-  .contact-link:hover .contact-link-value { border-bottom-color: var(--accent); color: var(--accent); }
+  .contact-link:hover .contact-link-value {
+    border-bottom-color: #E07A70;
+    color: #E07A70;
+  }
   .contact-link .copy-hint {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.12em;
-    color: var(--mute);
+    color: #8A8376;
     text-transform: uppercase;
     margin-top: 8px;
     opacity: 0;
@@ -1104,11 +1122,11 @@
     font-style: italic;
     font-size: 18px;
     line-height: 1.5;
-    color: var(--ink-soft);
+    color: #D8D1C2;
     max-width: 50ch;
     margin: 60px auto 0;
     padding-left: 20px;
-    border-left: 2px solid var(--accent);
+    border-left: 2px solid #E07A70;
     text-align: left;
   }
 
@@ -1333,9 +1351,9 @@
     .hero-name { font-size: 48pt; }
     .stat-number, .case-metric-value { font-size: 30pt; }
     img { max-width: 100% !important; page-break-inside: avoid; }
-    .manifesto { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .manifesto .manifesto-quote, .manifesto .principle h3 { color: black !important; }
-    .manifesto .principle p, .manifesto-sub { color: #333 !important; }
+    .manifesto, .contact { background: white !important; color: black !important; margin: 0 !important; padding-left: 0 !important; padding-right: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .manifesto .manifesto-quote, .manifesto .principle h3, .contact-lead, .contact-link-value { color: black !important; }
+    .manifesto .principle p, .manifesto-sub, .contact-note { color: #333 !important; }
   }
 </style>
 </head>
@@ -1348,7 +1366,27 @@
 
 <nav class="topbar" id="topbar">
   <div class="topbar-inner">
-    <a href="#top" class="brand">Kirill&nbsp;Lifanov</a>
+    <a href="#top" class="brand" aria-label="Главная">
+      <svg class="brand-invader" width="26" height="19" viewBox="0 0 11 8" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true" focusable="false" fill="currentColor">
+        <!-- Row 0: antennas -->
+        <rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/>
+        <!-- Row 1 -->
+        <rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/>
+        <!-- Row 2: top of head -->
+        <rect x="2" y="2" width="7" height="1"/>
+        <!-- Row 3: eyes -->
+        <rect x="1" y="3" width="2" height="1"/><rect x="4" y="3" width="3" height="1"/><rect x="8" y="3" width="2" height="1"/>
+        <!-- Row 4: full body -->
+        <rect x="0" y="4" width="11" height="1"/>
+        <!-- Row 5 -->
+        <rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/>
+        <!-- Row 6 -->
+        <rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/>
+        <!-- Row 7: legs -->
+        <rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/>
+      </svg>
+      <span class="brand-text">Kirill&nbsp;Lifanov</span>
+    </a>
     <div class="nav-links">
       <a href="#manifesto">Манифест</a>
       <a href="#cases">Кейсы</a>
@@ -1403,7 +1441,7 @@
       </div>
       <div class="hero-mark">
         <div class="hero-photo" id="hero-photo">
-          <img src="portrait_hero_opt.jpg" alt="Кирилл Лифанов — Digital &amp; Content Manager" />
+          <img src="portrait.jpg" alt="Кирилл Лифанов — Digital &amp; Content Manager" />
         </div>
         <div class="monogram-caption">
           <span class="monogram-line">Lifanov&nbsp;·&nbsp;Kirill</span>
@@ -2141,7 +2179,7 @@
   /* ---------- Topbar scroll state + progress bar ---------- */
   const topbar = document.getElementById('topbar');
   const progress = document.getElementById('scroll-progress');
-  const heroPhoto = document.getElementById('hero-photo');
+  const heroMark = document.querySelector('.hero-mark');
 
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
@@ -2151,9 +2189,9 @@
     const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
     progress.style.width = Math.min(100, Math.max(0, pct)) + '%';
 
-    // Subtle parallax on hero photo
-    if (heroPhoto && y < 800) {
-      heroPhoto.style.transform = `translateY(${y * 0.08}px)`;
+    // Subtle parallax on hero column (not on .hero-photo — breaks clip-path)
+    if (heroMark && y < 800) {
+      heroMark.style.transform = `translateY(${y * 0.06}px)`;
     }
   }, { passive: true });
 
