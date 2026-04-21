@@ -1317,20 +1317,14 @@
   }
 
   /* ===============================================
-     SCROLL PROGRESS BAR
+     SCROLL PROGRESS BAR (hidden — live invader is the indicator)
      =============================================== */
   .scroll-progress {
-    position: fixed;
-    top: 0; left: 0;
-    height: 2px;
-    width: 0%;
-    background: var(--accent);
-    z-index: 101;
-    transition: width .1s linear;
+    display: none;
   }
 
   /* ===============================================
-     LIVE INVADER (home in navbar — travels along the top edge on scroll)
+     LIVE INVADER (home in navbar — prep-launches to top edge, walks with wobble)
      =============================================== */
   .invader-live {
     position: fixed;
@@ -1340,26 +1334,12 @@
     color: var(--accent);
     z-index: 105;
     pointer-events: none;
-    /* Transform is set in JS every frame for smooth motion */
+    /* Transform (translate + scale + rotate) is driven entirely by JS every frame. */
     will-change: transform;
+    transform-origin: 50% 50%;
     filter: drop-shadow(0 2px 4px rgba(199,62,29,0.25));
   }
   .invader-live svg { display: block; width: 100%; height: 100%; }
-  /* Subtle wobble while traveling */
-  .invader-live.traveling { animation: invader-wobble 1.6s ease-in-out infinite; }
-  @keyframes invader-wobble {
-    0%, 100% { margin-top: 0; }
-    50%      { margin-top: -2px; }
-  }
-  /* Invader becomes slightly smaller during travel (it "flies") */
-  .invader-live.traveling {
-    width: 22px;
-    height: 16px;
-    transition: width .3s ease, height .3s ease;
-  }
-  .invader-live {
-    transition: width .3s ease, height .3s ease;
-  }
 
   /* ===============================================
      COPY TOAST
@@ -2597,23 +2577,34 @@
       });
     });
 
-    // Auto-invert cursor colour over dark sections
-    const darkSections = document.querySelectorAll('.manifesto, .contact, footer, .intro');
-    const darkObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        // Section is "under cursor" when it crosses the upper half of viewport
-        const underCursor = e.isIntersecting && e.intersectionRatio > 0.15;
-        e.target.classList.toggle('_cursor-over', underCursor);
-      });
-      const anyDark = document.querySelector('._cursor-over');
-      document.documentElement.classList.toggle('on-dark', !!anyDark);
-    }, { threshold: [0, 0.15, 0.5, 1] });
-    darkSections.forEach(s => darkObserver.observe(s));
+    // Auto-invert cursor colour over dark sections — based on actual cursor Y coord
+    const darkSections = Array.from(document.querySelectorAll('.manifesto, .contact, footer'));
+    let wasOnDark = false;
+    const checkDarkUnderCursor = () => {
+      let onDark = false;
+      for (const sec of darkSections) {
+        const r = sec.getBoundingClientRect();
+        if (my >= r.top && my <= r.bottom) { onDark = true; break; }
+      }
+      if (onDark !== wasOnDark) {
+        document.documentElement.classList.toggle('on-dark', onDark);
+        wasOnDark = onDark;
+      }
+    };
+    // Patch into the already-running render loop:
+    const origLoopWindow = window; // keep name collision-free
+    // We re-wrap the rAF loop above by calling checkDarkUnderCursor there.
+    // Simplest: add a separate lightweight rAF that only handles dark-state.
+    (function darkLoop() {
+      checkDarkUnderCursor();
+      requestAnimationFrame(darkLoop);
+    })();
+    // Also re-evaluate on scroll (cursor stays put, background moves under it)
+    window.addEventListener('scroll', checkDarkUnderCursor, { passive: true });
   }
 
-  /* ---------- TOPBAR / PROGRESS / LIVE INVADER / SCROLL-SPY / PARALLAX ---------- */
+  /* ---------- TOPBAR / SCROLL-SPY / PARALLAX ---------- */
   const topbar = document.getElementById('topbar');
-  const progress = document.getElementById('scroll-progress');
   const invaderLive = document.getElementById('invader-live');
   const invaderSlot = document.querySelector('.brand-invader-slot');
   const heroMark = document.querySelector('.hero-mark');
@@ -2627,52 +2618,12 @@
     if (section) sectionMap.set(id, { section, link: a });
   });
 
-  // Invader: smooth interpolation between "home" (inside logo) and "travel" (along top edge)
-  const INVADER_HOME_W = 26, INVADER_HOME_H = 19;
-  const INVADER_FLY_W = 22,  INVADER_FLY_H = 16;
-
-  const getHomePosition = () => {
-    if (!invaderSlot) return { x: 0, y: 0 };
-    const r = invaderSlot.getBoundingClientRect();
-    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
-  };
-
   let scrollTicking = false;
   const onScroll = () => {
     const y = window.scrollY;
     topbar.classList.toggle('scrolled', y > 20);
 
-    const h = document.documentElement;
-    const maxScroll = h.scrollHeight - h.clientHeight;
-    const pct = Math.min(100, Math.max(0, (h.scrollTop / maxScroll) * 100));
-    progress.style.width = pct + '%';
-
-    /* === LIVE INVADER positioning ===
-       When scrollY ≤ 10px: sits on top of the brand-invader-slot (home).
-       When scrollY > 60px: travels along the top edge, x = pct% of viewport.
-       Between 10 and 60: smooth blend. */
-    if (invaderLive) {
-      const travelAmount = Math.min(1, Math.max(0, (y - 10) / 50));
-      const traveling = travelAmount > 0.95;
-      invaderLive.classList.toggle('traveling', traveling);
-
-      const home = getHomePosition();
-      const travelX = (pct / 100) * window.innerWidth;
-      const travelY = 10; // right above the scroll-progress bar (bar is at top:0 height:2)
-      const currentW = lerp(INVADER_HOME_W, INVADER_FLY_W, easeInOut(travelAmount));
-      const currentH = lerp(INVADER_HOME_H, INVADER_FLY_H, easeInOut(travelAmount));
-
-      const targetX = lerp(home.x, travelX, easeInOut(travelAmount));
-      const targetY = lerp(home.y, travelY, easeInOut(travelAmount));
-
-      invaderLive.style.width  = currentW + 'px';
-      invaderLive.style.height = currentH + 'px';
-      // translate so that invader centres on (targetX, targetY)
-      invaderLive.style.transform =
-        `translate(${targetX - currentW / 2}px, ${targetY - currentH / 2}px)`;
-    }
-
-    // Parallax (only when motion is OK)
+    // Parallax on hero (only when motion is OK)
     if (!prefersReducedMotion && heroMark && y < 800) {
       heroMark.style.transform = `translateY(${y * 0.06}px)`;
     }
@@ -2695,10 +2646,150 @@
       scrollTicking = true;
     }
   }, { passive: true });
-  // Also reposition on resize (brand-slot could move)
-  window.addEventListener('resize', onScroll, { passive: true });
-  // Initial call after layout settles
-  requestAnimationFrame(() => requestAnimationFrame(onScroll));
+  onScroll();
+
+  /* ---------- LIVE INVADER state machine ----------
+     States: home → prep (400ms: squat/wiggle/launch) → flying (walks w/ wobble)
+                    → returning (350ms) → home
+     Everything driven by one rAF loop that reads scrollY live. */
+  (function () {
+    if (!invaderLive) return;
+
+    const HOME_W = 26, HOME_H = 19;
+    const FLY_W  = 22, FLY_H  = 16;
+    const PREP_MS   = 450;
+    const RETURN_MS = 350;
+    const TRIGGER_PREP_Y = 24;   // scrollY that kicks off prep-launch
+    const TRIGGER_RETURN_Y = 6;  // scrollY that sends invader home
+
+    let state = 'home';
+    let stateStart = 0;
+    let returnFromX = 0, returnFromY = 0; // remembered pos at moment of return
+
+    const getHome = () => {
+      if (!invaderSlot) return { x: 24, y: 30 };
+      const r = invaderSlot.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    };
+    const getScrollPct = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      return max <= 0 ? 0 : Math.min(1, Math.max(0, h.scrollTop / max));
+    };
+    const FLY_Y = 11;
+
+    // Reduced motion: no animation, just home vs flying
+    const applyTransform = (x, y, sx, sy, rot) => {
+      // Anchor the invader by its centre, then scale & rotate around centre.
+      invaderLive.style.transform =
+        `translate(${x - HOME_W/2}px, ${y - HOME_H/2}px) ` +
+        `scale(${sx}, ${sy}) rotate(${rot}deg)`;
+    };
+
+    const tick = (now) => {
+      const y = window.scrollY;
+      const pct = getScrollPct();
+      const home = getHome();
+
+      // --- State transitions ---
+      if ((state === 'home' || state === 'returning') && y > TRIGGER_PREP_Y) {
+        if (state === 'returning') {
+          // Interrupting return: start prep from wherever we are visually.
+          // Easiest: let prep start from home coord; tiny visual teleport
+          // is hidden by prep's squat motion.
+        }
+        state = 'prep';
+        stateStart = now;
+      } else if (state === 'flying' && y < TRIGGER_RETURN_Y) {
+        state = 'returning';
+        stateStart = now;
+        // Remember current position on top edge
+        returnFromX = pct * window.innerWidth;
+        returnFromY = FLY_Y;
+      }
+
+      // --- Render by state ---
+      if (state === 'home' || prefersReducedMotion && y < TRIGGER_PREP_Y) {
+        applyTransform(home.x, home.y, 1, 1, 0);
+      }
+      else if (state === 'prep') {
+        const t = (now - stateStart) / PREP_MS;
+        if (t >= 1) { state = 'flying'; }
+
+        let x, ypos, sx, sy, rot;
+
+        if (t < 0.3) {
+          // SQUAT — shrink vertically, stretch horizontally, dip down a bit
+          const k = t / 0.3;
+          const ease = Math.sin(k * Math.PI);     // 0→1→0
+          sx = 1 + 0.14 * ease;
+          sy = 1 - 0.13 * ease;
+          x = home.x;
+          ypos = home.y + 6 * ease;
+          rot = 0;
+        } else if (t < 0.55) {
+          // WIGGLE — oscillate rotation while starting to rise
+          const k = (t - 0.3) / 0.25;
+          sx = 1 + 0.02 * (1 - k);
+          sy = 1 - 0.02 * (1 - k);
+          x = home.x;
+          ypos = home.y - 3 * k;
+          rot = Math.sin(k * Math.PI * 3) * 14 * (1 - k * 0.4);
+        } else {
+          // LAUNCH — arc from home to top-edge position
+          const k = (t - 0.55) / 0.45;
+          const ease = 1 - Math.pow(1 - k, 3);   // ease-out cubic
+          const targetX = pct * window.innerWidth;
+          const targetY = FLY_Y;
+          x = lerp(home.x, targetX, ease);
+          // Arc upward then land
+          const arc = 18;
+          const straightY = lerp(home.y - 3, targetY, ease);
+          ypos = straightY - arc * Math.sin(k * Math.PI);
+          sx = lerp(1, FLY_W / HOME_W, ease);
+          sy = lerp(1, FLY_H / HOME_H, ease);
+          // Dampening rotation from wiggle residue
+          rot = Math.sin((1 - k) * Math.PI * 2) * 6;
+        }
+
+        applyTransform(x, ypos, sx, sy, rot);
+      }
+      else if (state === 'flying') {
+        const baseX = pct * window.innerWidth;
+        // Walking wobble: three sin waves of different frequencies
+        const wobbleY = Math.sin(now * 0.006) * 3.5;          // bounce up-down
+        const wobbleX = Math.sin(now * 0.0045) * 2.2;         // sway left-right
+        const wobbleRot = Math.sin(now * 0.0035) * 5.5;       // sway rotation (deg)
+        applyTransform(
+          baseX + wobbleX,
+          FLY_Y + wobbleY,
+          FLY_W / HOME_W,
+          FLY_H / HOME_H,
+          wobbleRot
+        );
+      }
+      else if (state === 'returning') {
+        const t = (now - stateStart) / RETURN_MS;
+        if (t >= 1) { state = 'home'; }
+        const k = Math.min(1, t);
+        const ease = 1 - Math.pow(1 - k, 2.4);  // ease-out
+        const x = lerp(returnFromX, home.x, ease);
+        // Tiny arc downward as it settles back
+        const straightY = lerp(returnFromY, home.y, ease);
+        const settleArc = 8 * Math.sin(k * Math.PI);
+        const ypos = straightY + settleArc;
+        const sx = lerp(FLY_W / HOME_W, 1, ease);
+        const sy = lerp(FLY_H / HOME_H, 1, ease);
+        const rot = Math.sin((1 - k) * Math.PI) * 6;
+        applyTransform(x, ypos, sx, sy, rot);
+      }
+
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+
+    // On resize, home position changes — state stays, tick will pick up new getHome()
+  })();
 
   /* ---------- BURGER / MOBILE MENU ---------- */
   const burger = document.getElementById('burger');
