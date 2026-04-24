@@ -1522,15 +1522,14 @@
   .cases-modal {
     position: fixed;
     inset: 0;
-    background: rgba(14, 13, 11, 0.88);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(14, 13, 11, 0.92);
     z-index: 400;
     display: none;
     align-items: center; justify-content: center;
     padding: 24px;
     opacity: 0;
-    transition: opacity .35s ease;
+    transition: opacity .3s ease;
+    contain: layout style paint;
   }
   .cases-modal.open { display: flex; opacity: 1; }
   .cases-card {
@@ -1541,8 +1540,10 @@
     max-width: 680px;
     position: relative;
     transform: scale(0.94) translateY(16px);
-    transition: transform .45s cubic-bezier(.2,.8,.2,1);
-    box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    will-change: transform;
+    contain: layout style;
   }
   .cases-modal.open .cases-card { transform: scale(1) translateY(0); }
   .cases-card::before {
@@ -1612,17 +1613,17 @@
     text-decoration: none;
     color: var(--ink);
     position: relative;
-    transition: color .25s ease;
+    transition: color .2s ease;
   }
   .cases-list a::before {
     content: "";
     position: absolute;
-    left: -16px;
+    left: -18px;
     top: 50%;
     width: 6px; height: 6px;
     background: var(--accent);
     transform: translateY(-50%) scale(0);
-    transition: transform .3s cubic-bezier(.2,.8,.2,1);
+    transition: transform .25s cubic-bezier(.2,.8,.2,1);
   }
   .cases-list a:hover { color: var(--accent); }
   .cases-list a:hover::before { transform: translateY(-50%) scale(1); }
@@ -1650,7 +1651,7 @@
     color: var(--mute);
     white-space: nowrap;
     text-align: right;
-    transition: color .25s ease;
+    transition: color .2s ease;
   }
   .cases-list a:hover .cases-tag { color: var(--accent); }
   @media (max-width: 560px) {
@@ -2101,8 +2102,8 @@
 <!-- ===============================================
      BLOCK 4 — CASES (anchor)
      =============================================== -->
-<!-- Invisible anchor so "Смотреть кейсы" lands right before Case 01 -->
-<div id="cases" style="position: relative; top: -40px;"></div>
+<!-- Invisible anchor so "Смотреть кейсы" / modal case link lands right before Case 01 -->
+<div id="cases" style="height: 1px; margin-top: -40px;" aria-hidden="true"></div>
 
 <!-- ===== CASE 01 — BRAND SAFETY ===== -->
 <section id="case-01">
@@ -2732,6 +2733,20 @@
   /* ---------- Shared utilities ---------- */
   const lerp = (a, b, n) => a + (b - a) * n;
   const easeInOut = (t) => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+
+  /* ---------- Disable browser scroll restoration (fixes Safari opening page
+     at a random scroll position from the previous session) ---------- */
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  // If the URL has no hash, force top on load — prevents Safari auto-scroll
+  if (!window.location.hash) {
+    window.scrollTo(0, 0);
+    // Also run on pageshow to cover the back/forward cache
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted && !window.location.hash) window.scrollTo(0, 0);
+    });
+  }
 
   /* ---------- Feature detection ---------- */
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
