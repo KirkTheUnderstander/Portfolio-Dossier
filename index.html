@@ -209,6 +209,37 @@
     transition: opacity .35s ease;
   }
   .mobile-menu.open { opacity: 1; pointer-events: auto; }
+  .mobile-close {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(241,236,226,0.25);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .25s ease, transform .3s cubic-bezier(.2,.8,.2,1);
+    opacity: 0;
+  }
+  .mobile-menu.open .mobile-close {
+    opacity: 1;
+    transition: opacity .4s ease .2s, border-color .25s ease, transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .mobile-close:hover { border-color: #E07A70; transform: rotate(90deg); }
+  .mobile-close span {
+    position: absolute;
+    width: 18px;
+    height: 1.5px;
+    background: #F1ECE2;
+    transition: background .25s ease;
+  }
+  .mobile-close span:first-child { transform: rotate(45deg); }
+  .mobile-close span:last-child  { transform: rotate(-45deg); }
+  .mobile-close:hover span { background: #E07A70; }
   .mobile-menu ul {
     list-style: none;
     display: flex;
@@ -1486,6 +1517,153 @@
   .egg-close:hover { background: var(--accent); border-color: var(--accent); }
 
   /* ===============================================
+     CASES PICKER MODAL
+     =============================================== */
+  .cases-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(14, 13, 11, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 400;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity .35s ease;
+  }
+  .cases-modal.open { display: flex; opacity: 1; }
+  .cases-card {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    padding: clamp(34px, 5vw, 52px) clamp(30px, 5vw, 60px) clamp(34px, 5vw, 52px);
+    width: min(680px, 100%);
+    max-width: 680px;
+    position: relative;
+    transform: scale(0.94) translateY(16px);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+  }
+  .cases-modal.open .cases-card { transform: scale(1) translateY(0); }
+  .cases-card::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 4px;
+    background: var(--accent);
+  }
+  .cases-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+    gap: 20px;
+  }
+  .cases-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .cases-close {
+    width: 34px; height: 34px;
+    border: 1px solid var(--rule);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    transition: border-color .25s ease, transform .3s cubic-bezier(.2,.8,.2,1);
+    flex-shrink: 0;
+  }
+  .cases-close:hover { border-color: var(--accent); transform: rotate(90deg); }
+  .cases-close span {
+    position: absolute;
+    width: 14px; height: 1.5px;
+    background: var(--ink);
+    transition: background .25s ease;
+  }
+  .cases-close span:first-child { transform: rotate(45deg); }
+  .cases-close span:last-child  { transform: rotate(-45deg); }
+  .cases-close:hover span { background: var(--accent); }
+
+  .cases-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .cases-list li {
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .cases-list li:last-child { border-bottom: none; }
+  .cases-list a {
+    display: grid;
+    grid-template-columns: 56px 1fr 110px;
+    column-gap: 24px;
+    align-items: center;
+    min-height: 68px;
+    padding: 18px 0;
+    text-decoration: none;
+    color: var(--ink);
+    position: relative;
+    transition: color .25s ease;
+  }
+  .cases-list a::before {
+    content: "";
+    position: absolute;
+    left: -16px;
+    top: 50%;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    transform: translateY(-50%) scale(0);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .cases-list a:hover { color: var(--accent); }
+  .cases-list a:hover::before { transform: translateY(-50%) scale(1); }
+  .cases-list .cases-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    font-variation-settings: "opsz" 144;
+  }
+  .cases-list .cases-title {
+    font-family: var(--serif);
+    font-size: clamp(19px, 2.2vw, 24px);
+    line-height: 1.2;
+    font-variation-settings: "opsz" 144;
+    letter-spacing: -0.01em;
+  }
+  .cases-list .cases-title em { color: var(--accent); font-style: italic; }
+  .cases-list .cases-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mute);
+    white-space: nowrap;
+    text-align: right;
+    transition: color .25s ease;
+  }
+  .cases-list a:hover .cases-tag { color: var(--accent); }
+  @media (max-width: 560px) {
+    .cases-list a {
+      grid-template-columns: 42px 1fr;
+      row-gap: 4px;
+      column-gap: 16px;
+    }
+    .cases-list .cases-tag { grid-column: 2; }
+    .cases-list a::before { display: none; }
+  }
+
+  /* ===============================================
      REVEAL ANIMATIONS
      =============================================== */
   .reveal {
@@ -1562,19 +1740,32 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
-    transition: opacity .6s ease .25s;
+    opacity: 1;
   }
   .intro.done {
     opacity: 0;
     pointer-events: none;
   }
+  .intro-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Initial position — way above viewport, upside down.
+       Real animation is driven by JS via Web Animations API. */
+    transform: translateY(-120vh) rotate(180deg);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
   .intro-invader {
     color: var(--accent);
-    opacity: 0;
-    transform: translateY(-180px) scale(0.6);
+    display: block;
+    transform-origin: 50% 50%;
   }
-  .intro.play .intro-invader {
-    animation: intro-drop 1100ms cubic-bezier(.3,1.5,.4,1) forwards;
+  .eye {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    will-change: transform;
   }
   .intro-label {
     position: absolute;
@@ -1587,16 +1778,19 @@
     color: var(--mute);
     text-transform: uppercase;
     opacity: 0;
-    transition: opacity .5s ease .8s;
+    will-change: opacity;
   }
-  .intro.play .intro-label { opacity: 1; }
-  @keyframes intro-drop {
-    0%   { opacity: 0; transform: translateY(-200px) scale(0.55) rotate(-8deg); }
-    55%  { opacity: 1; transform: translateY(10px)   scale(1.02) rotate(2deg); }
-    75%  {             transform: translateY(-6px)  scale(0.98) rotate(-1deg); }
-    100% { opacity: 1; transform: translateY(0)     scale(1)    rotate(0); }
+
+  /* Breath: subtle idle float after the sequence. */
+  .intro.settled .intro-stage {
+    animation: intro-breath 2.6s ease-in-out infinite;
   }
-  /* When intro runs, slightly delay hero reveal for impact */
+  @keyframes intro-breath {
+    0%, 100% { transform: translateY(0)    rotate(0deg); }
+    50%      { transform: translateY(-3px) rotate(0deg); }
+  }
+
+  /* When intro runs, delay hero reveal for impact */
   body.intro-active .hero > * { opacity: 0; }
   body.intro-active.intro-settled .hero > * {
     animation: hero-fade-up .8s cubic-bezier(.2,.8,.2,1) forwards;
@@ -1651,16 +1845,23 @@
      INTRO OVERLAY (first visit)
      =============================================== -->
 <div class="intro" id="intro" aria-hidden="true">
-  <svg class="intro-invader" width="160" height="116" viewBox="0 0 11 8" shape-rendering="crispEdges" fill="currentColor">
-    <rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/>
-    <rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/>
-    <rect x="2" y="2" width="7" height="1"/>
-    <rect x="1" y="3" width="2" height="1"/><rect x="4" y="3" width="3" height="1"/><rect x="8" y="3" width="2" height="1"/>
-    <rect x="0" y="4" width="11" height="1"/>
-    <rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/>
-    <rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/>
-    <rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/>
-  </svg>
+  <div class="intro-stage">
+    <svg class="intro-invader" width="160" height="116" viewBox="0 0 11 8" shape-rendering="crispEdges" fill="currentColor">
+      <rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/>
+      <rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/>
+      <rect x="2" y="2" width="7" height="1"/>
+      <!-- Row y=3 is drawn as a SOLID body strip (x=1..9), then the eyes are
+           paper-coloured overlays that cut "holes" in the body. Blinking shrinks
+           those overlays to a line — the body underneath fills in → eyes close. -->
+      <rect x="1" y="3" width="9" height="1"/>
+      <rect class="eye eye-l" x="3" y="3" width="1" height="1" fill="#f4f1ea"/>
+      <rect class="eye eye-r" x="7" y="3" width="1" height="1" fill="#f4f1ea"/>
+      <rect x="0" y="4" width="11" height="1"/>
+      <rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/>
+      <rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/>
+      <rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/>
+    </svg>
+  </div>
   <div class="intro-label">Kirill Lifanov · MMXXVI</div>
 </div>
 
@@ -1706,6 +1907,9 @@
 
 <!-- Mobile menu overlay -->
 <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Навигация">
+  <button class="mobile-close" id="mobile-close" aria-label="Закрыть меню">
+    <span></span><span></span>
+  </button>
   <ul>
     <li><a href="#manifesto" data-mm>Манифест</a></li>
     <li><a href="#cases" data-mm>Кейсы</a></li>
@@ -2434,9 +2638,9 @@
       Давайте <em>знакомиться</em>.
     </h2>
     <div class="contact-links">
-      <a href="mailto:kirill.lifanov@icloud.com" class="contact-link reveal" data-copy="kirill.lifanov@icloud.com">
+      <a href="mailto:kirill.lifanoff@icloud.com" class="contact-link reveal" data-copy="kirill.lifanoff@icloud.com">
         <span class="contact-link-label">E-mail</span>
-        <span class="contact-link-value">kirill.lifanov@icloud.com</span>
+        <span class="contact-link-value">kirill.lifanoff@icloud.com</span>
         <span class="copy-hint">Клик → скопировать</span>
       </a>
       <a href="https://t.me/lacabeza_lifanov" target="_blank" rel="noopener" class="contact-link reveal">
@@ -2477,6 +2681,37 @@
 <div class="toast" id="toast">Скопировано</div>
 
 <!-- ===============================================
+     CASES PICKER MODAL
+     =============================================== -->
+<div class="cases-modal" id="cases-modal" role="dialog" aria-modal="true" aria-labelledby="cases-eyebrow-text">
+  <div class="cases-card">
+    <div class="cases-header">
+      <span class="cases-eyebrow" id="cases-eyebrow-text">Выберите&nbsp;кейс</span>
+      <button class="cases-close" id="cases-close" aria-label="Закрыть">
+        <span></span><span></span>
+      </button>
+    </div>
+    <ul class="cases-list">
+      <li><a href="#case-01" data-case-pick>
+        <span class="cases-num">01</span>
+        <span class="cases-title">Закрыл юридический риск <em>3,2&nbsp;млн&nbsp;₽</em> за 30&nbsp;минут</span>
+        <span class="cases-tag">Brand&nbsp;Safety</span>
+      </a></li>
+      <li><a href="#case-02" data-case-pick>
+        <span class="cases-num">02</span>
+        <span class="cases-title">Перевёл редакцию на&nbsp;<em>AI-ассистирование</em> · ×3–10 к&nbsp;скорости</span>
+        <span class="cases-tag">AI-workflow</span>
+      </a></li>
+      <li><a href="#case-03" data-case-pick>
+        <span class="cases-num">03</span>
+        <span class="cases-title">От медианных 6–10&nbsp;тыс. — к&nbsp;<em>700&nbsp;000+</em> просмотров</span>
+        <span class="cases-tag">Virality</span>
+      </a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===============================================
      EASTER EGG MODAL
      =============================================== -->
 <div class="egg-modal" id="egg-modal" role="dialog" aria-modal="true" aria-labelledby="egg-title-text">
@@ -2502,33 +2737,136 @@
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  /* ---------- INTRO overlay (first visit per session) ---------- */
+  /* ---------- INTRO overlay (first visit per session) — WAAPI ---------- */
   (function () {
     const intro = document.getElementById('intro');
+    const stage = intro?.querySelector('.intro-stage');
+    const label = intro?.querySelector('.intro-label');
+    const eyes  = intro?.querySelectorAll('.eye');
     const seenKey = 'kl_intro_seen_v1';
     const alreadySeen = sessionStorage.getItem(seenKey);
 
+    if (!intro || !stage) return;
     if (prefersReducedMotion || alreadySeen) {
       intro.style.display = 'none';
       return;
     }
 
     document.body.classList.add('intro-active');
-    // Kick off animation on next frame
-    requestAnimationFrame(() => { intro.classList.add('play'); });
 
-    // Fade out after invader drop + slight pause, then reveal hero
-    setTimeout(() => {
-      intro.classList.add('done');
+    // Helper: run a one-shot animation and return a Promise that resolves on finish.
+    const animate = (el, keyframes, options) =>
+      new Promise(resolve => {
+        const anim = el.animate(keyframes, {
+          fill: 'forwards',
+          ...options
+        });
+        anim.onfinish = resolve;
+      });
+
+    // Helper: freeze current computed transform as a new baseline
+    // (so the next animation starts exactly where the previous one ended).
+    const commitTransform = (el, transform, opacity) => {
+      el.style.transform = transform;
+      if (opacity !== undefined) el.style.opacity = opacity;
+    };
+
+    // === RUN SEQUENCE ===
+    (async () => {
+      // Label fades in alongside the action
+      label?.animate(
+        [{ opacity: 0 }, { opacity: 1 }],
+        { duration: 800, delay: 1600, fill: 'forwards', easing: 'ease-out' }
+      );
+
+      /* 1. FALL (900ms): from -120vh (rotated 180°) down to y=0.
+         ease-in simulates gravity acceleration. */
+      await animate(stage, [
+        { transform: 'translateY(-120vh) rotate(180deg) scale(1, 1)', opacity: 0 },
+        { transform: 'translateY(-90vh)  rotate(180deg) scale(1, 1)', opacity: 1, offset: 0.1 },
+        { transform: 'translateY(0)      rotate(180deg) scale(1, 1)', opacity: 1 }
+      ], { duration: 900, easing: 'cubic-bezier(.55, 0, .85, .3)' });
+      commitTransform(stage, 'translateY(0) rotate(180deg) scale(1, 1)', 1);
+
+      /* 2. HEAD SQUAT (260ms): hard compression after head impact — exaggerated */
+      await animate(stage, [
+        { transform: 'translateY(0)    rotate(180deg) scale(1, 1)' },
+        { transform: 'translateY(22px) rotate(180deg) scale(1.28, 0.62)' }
+      ], { duration: 220, easing: 'cubic-bezier(.28, 0, .35, 1)' });
+      commitTransform(stage, 'translateY(22px) rotate(180deg) scale(1.28, 0.62)');
+
+      /* 2b. PRE-JUMP STRETCH (120ms): squash-and-stretch — winds up before leaping */
+      await animate(stage, [
+        { transform: 'translateY(22px) rotate(180deg) scale(1.28, 0.62)' },
+        { transform: 'translateY(14px) rotate(180deg) scale(0.85, 1.20)' }
+      ], { duration: 130, easing: 'cubic-bezier(.34, 1.1, .65, 1)' });
+      commitTransform(stage, 'translateY(14px) rotate(180deg) scale(0.85, 1.20)');
+
+      /* 3. JUMP + FLIP (900ms, ONE continuous animation with per-keyframe easing).
+         Per-keyframe easing is the secret to seamless multi-phase motion —
+         each segment gets its own curve, but the animation is a single timeline. */
+      await animate(stage, [
+        { transform: 'translateY(14px)   rotate(180deg) scale(0.85, 1.20)', offset: 0,
+          easing: 'cubic-bezier(.15, .65, .25, 1)' },       // ascent: ease-out, explosive start
+        { transform: 'translateY(-105px) rotate(285deg) scale(1, 1)',       offset: 0.55,
+          easing: 'cubic-bezier(.55, 0, .85, .3)' },        // apex → descent: ease-in (gravity)
+        { transform: 'translateY(0)      rotate(360deg) scale(1.05, 0.95)', offset: 1 }
+      ], { duration: 900 });
+      commitTransform(stage, 'translateY(0) rotate(360deg) scale(1.05, 0.95)');
+
+      /* 4. LAND SQUAT (200ms): heavy absorption landing on legs */
+      await animate(stage, [
+        { transform: 'translateY(0)   rotate(360deg) scale(1.05, 0.95)' },
+        { transform: 'translateY(12px) rotate(360deg) scale(1.25, 0.65)' }
+      ], { duration: 200, easing: 'cubic-bezier(.28, 0, .3, 1)' });
+      commitTransform(stage, 'translateY(12px) rotate(360deg) scale(1.25, 0.65)');
+
+      /* 5. RECOVER (320ms): springs back to full height with overshoot */
+      await animate(stage, [
+        { transform: 'translateY(12px) rotate(360deg) scale(1.25, 0.65)' },
+        { transform: 'translateY(-6px) rotate(360deg) scale(0.94, 1.08)', offset: 0.55 },
+        { transform: 'translateY(0)    rotate(360deg) scale(1, 1)' }
+      ], { duration: 320, easing: 'cubic-bezier(.34, 1.45, .64, 1)' });
+      commitTransform(stage, 'translateY(0) rotate(360deg) scale(1, 1)');
+
+      /* 6. SHAKE (400ms): mild wiggles */
+      await animate(stage, [
+        { transform: 'translateY(0) rotate(360deg)' },
+        { transform: 'translateY(0) rotate(372deg)', offset: 0.2 },
+        { transform: 'translateY(0) rotate(350deg)', offset: 0.4 },
+        { transform: 'translateY(0) rotate(368deg)', offset: 0.6 },
+        { transform: 'translateY(0) rotate(355deg)', offset: 0.8 },
+        { transform: 'translateY(0) rotate(360deg)' }
+      ], { duration: 400, easing: 'linear' });
+      commitTransform(stage, 'translateY(0) rotate(360deg) scale(1, 1)');
+
+      /* 7. BLINK + BLINK on eyes, parallel. Hold body still. */
+      const blink = (eye) =>
+        eye.animate([
+          { transform: 'scaleY(1)' },
+          { transform: 'scaleY(0.05)', offset: 0.5 },
+          { transform: 'scaleY(1)' }
+        ], { duration: 180, easing: 'ease-in-out', fill: 'forwards' }).finished;
+      const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+      await wait(300);
+      await Promise.all([...eyes].map(e => blink(e)));
+      await wait(380);
+      await Promise.all([...eyes].map(e => blink(e)));
+
+      /* 8. Fade out overlay */
+      await wait(500);
       document.body.classList.add('intro-settled');
       sessionStorage.setItem(seenKey, '1');
-    }, 1400);
 
-    // Final cleanup: remove overlay after fade
-    setTimeout(() => {
+      await animate(intro, [
+        { opacity: 1 },
+        { opacity: 0 }
+      ], { duration: 650, easing: 'cubic-bezier(.4, 0, .2, 1)' });
+
       intro.style.display = 'none';
       document.body.classList.remove('intro-active');
-    }, 2200);
+    })();
   })();
 
   /* ---------- MAGIC CURSOR ---------- */
@@ -2577,29 +2915,48 @@
       });
     });
 
-    // Auto-invert cursor colour over dark sections — based on actual cursor Y coord
+    // Auto-invert cursor colour over dark sections — based on actual cursor Y coord.
+    // Also handles "light islands on dark overlays" (egg-card inside egg-modal)
+    // and "dark islands on light" (mobile-menu overlay when open).
     const darkSections = Array.from(document.querySelectorAll('.manifesto, .contact, footer'));
+    const hitTest = (el) => {
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return mx >= r.left && mx <= r.right && my >= r.top && my <= r.bottom;
+    };
     let wasOnDark = false;
     const checkDarkUnderCursor = () => {
-      let onDark = false;
-      for (const sec of darkSections) {
-        const r = sec.getBoundingClientRect();
-        if (my >= r.top && my <= r.bottom) { onDark = true; break; }
+      // Highest-priority overlays first
+      const eggModal = document.getElementById('egg-modal');
+      const eggCard  = eggModal?.querySelector('.egg-card');
+      const casesModal = document.getElementById('cases-modal');
+      const casesCard  = casesModal?.querySelector('.cases-card');
+      const mobile   = document.getElementById('mobile-menu');
+
+      let onDark;
+      if (mobile?.classList.contains('open')) {
+        onDark = true; // whole fullscreen mobile menu is dark
+      } else if (eggModal?.classList.contains('open')) {
+        onDark = !hitTest(eggCard);
+      } else if (casesModal?.classList.contains('open')) {
+        onDark = !hitTest(casesCard);
+      } else {
+        // Normal flow: check y against dark sections
+        onDark = false;
+        for (const sec of darkSections) {
+          const r = sec.getBoundingClientRect();
+          if (my >= r.top && my <= r.bottom) { onDark = true; break; }
+        }
       }
       if (onDark !== wasOnDark) {
         document.documentElement.classList.toggle('on-dark', onDark);
         wasOnDark = onDark;
       }
     };
-    // Patch into the already-running render loop:
-    const origLoopWindow = window; // keep name collision-free
-    // We re-wrap the rAF loop above by calling checkDarkUnderCursor there.
-    // Simplest: add a separate lightweight rAF that only handles dark-state.
     (function darkLoop() {
       checkDarkUnderCursor();
       requestAnimationFrame(darkLoop);
     })();
-    // Also re-evaluate on scroll (cursor stays put, background moves under it)
     window.addEventListener('scroll', checkDarkUnderCursor, { passive: true });
   }
 
@@ -2628,12 +2985,19 @@
       heroMark.style.transform = `translateY(${y * 0.06}px)`;
     }
 
-    // Scroll-spy: find the section currently crossing the upper viewport line
+    // Scroll-spy: the LAST section whose top has crossed above the trigger line.
+    // This guarantees one section is always active — no gaps between sections.
     const trigger = window.innerHeight * 0.35;
     let activeId = null;
+    let bestTop = -Infinity;
     sectionMap.forEach(({ section }, id) => {
       const rect = section.getBoundingClientRect();
-      if (rect.top <= trigger && rect.bottom > trigger) activeId = id;
+      // Section has started (top passed trigger line going down)
+      // AND hasn't fully passed (bottom still below top of screen)
+      if (rect.top <= trigger && rect.top > bestTop && rect.bottom > 0) {
+        bestTop = rect.top;
+        activeId = id;
+      }
     });
     navAnchors.forEach(a => {
       a.classList.toggle('active', a.getAttribute('href') === '#' + activeId);
@@ -2677,6 +3041,16 @@
       return max <= 0 ? 0 : Math.min(1, Math.max(0, h.scrollTop / max));
     };
     const FLY_Y = 11;
+    // Visible travel range on the top edge: inset enough that neither the
+    // centre nor the wobble (±2.2px) nor the ±5.5° rotation clip the edge.
+    // Effective half-width at ±5.5° rotation ≈ FLY_W/2 * cos + FLY_H/2 * sin ≈ 12.5px.
+    const EDGE_MARGIN = 8;
+    const EFFECTIVE_HALF_W = FLY_W / 2 + 3; // includes wobble X headroom
+    const travelX = (pct) => {
+      const min = EFFECTIVE_HALF_W + EDGE_MARGIN;
+      const max = window.innerWidth - EFFECTIVE_HALF_W - EDGE_MARGIN;
+      return min + pct * (max - min);
+    };
 
     // Reduced motion: no animation, just home vs flying
     const applyTransform = (x, y, sx, sy, rot) => {
@@ -2704,7 +3078,7 @@
         state = 'returning';
         stateStart = now;
         // Remember current position on top edge
-        returnFromX = pct * window.innerWidth;
+        returnFromX = travelX(pct);
         returnFromY = FLY_Y;
       }
 
@@ -2739,7 +3113,7 @@
           // LAUNCH — arc from home to top-edge position
           const k = (t - 0.55) / 0.45;
           const ease = 1 - Math.pow(1 - k, 3);   // ease-out cubic
-          const targetX = pct * window.innerWidth;
+          const targetX = travelX(pct);
           const targetY = FLY_Y;
           x = lerp(home.x, targetX, ease);
           // Arc upward then land
@@ -2755,7 +3129,7 @@
         applyTransform(x, ypos, sx, sy, rot);
       }
       else if (state === 'flying') {
-        const baseX = pct * window.innerWidth;
+        const baseX = travelX(pct);
         // Walking wobble: three sin waves of different frequencies
         const wobbleY = Math.sin(now * 0.006) * 3.5;          // bounce up-down
         const wobbleX = Math.sin(now * 0.0045) * 2.2;         // sway left-right
@@ -2802,6 +3176,7 @@
     document.body.style.overflow = willOpen ? 'hidden' : '';
   };
   burger.addEventListener('click', () => toggleMobile());
+  document.getElementById('mobile-close')?.addEventListener('click', () => toggleMobile(false));
   document.querySelectorAll('[data-mm]').forEach(a => {
     a.addEventListener('click', () => toggleMobile(false));
   });
@@ -2917,6 +3292,7 @@
     if (e.key === 'Escape') {
       if (lightbox.classList.contains('open')) closeLightbox();
       if (eggModal.classList.contains('open')) closeEgg();
+      if (document.getElementById('cases-modal').classList.contains('open')) closeCases();
       if (mobileMenu.classList.contains('open')) toggleMobile(false);
     }
   });
@@ -2968,6 +3344,38 @@
   eggTrigger.addEventListener('click', (e) => { e.stopPropagation(); openEgg(); });
   eggClose.addEventListener('click', closeEgg);
   eggModal.addEventListener('click', (e) => { if (e.target === eggModal) closeEgg(); });
+
+  /* ---------- CASES PICKER MODAL ---------- */
+  const casesModal = document.getElementById('cases-modal');
+  const casesClose = document.getElementById('cases-close');
+  const openCases = () => { casesModal.classList.add('open'); document.body.style.overflow = 'hidden'; };
+  const closeCases = () => { casesModal.classList.remove('open'); document.body.style.overflow = ''; };
+  // Intercept every #cases link (desktop nav + mobile menu)
+  document.querySelectorAll('a[href="#cases"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      // If user opened from mobile menu, close it first
+      if (mobileMenu.classList.contains('open')) toggleMobile(false);
+      openCases();
+    });
+  });
+  // Case picks: close modal, then smooth scroll to the case section
+  document.querySelectorAll('[data-case-pick]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      closeCases();
+      if (target) {
+        // Wait one frame so overflow/scroll state resets before scrolling
+        setTimeout(() => {
+          const y = target.getBoundingClientRect().top + window.scrollY - 90;
+          window.scrollTo({ top: y, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        }, 120);
+      }
+    });
+  });
+  casesClose.addEventListener('click', closeCases);
+  casesModal.addEventListener('click', (e) => { if (e.target === casesModal) closeCases(); });
 
   /* ---------- KONAMI CODE ---------- */
   (function() {
