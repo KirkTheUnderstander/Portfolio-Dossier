@@ -1400,6 +1400,21 @@
   }
   .invader-live svg { display: block; width: 100%; height: 100%; }
 
+  .section-flash {
+    animation: sectionFlash 1.05s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes sectionFlash {
+    0% {
+      box-shadow: inset 0 0 0 0 rgba(199,62,29,0), 0 0 0 0 rgba(199,62,29,0);
+    }
+    32% {
+      box-shadow: inset 0 0 0 1px rgba(199,62,29,0.22), 0 0 0 14px rgba(199,62,29,0.08);
+    }
+    100% {
+      box-shadow: inset 0 0 0 0 rgba(199,62,29,0), 0 0 0 0 rgba(199,62,29,0);
+    }
+  }
+
   /* ===============================================
      COPY TOAST
      =============================================== */
@@ -1448,7 +1463,11 @@
     max-width: 100%; max-height: 100%;
     object-fit: contain;
     box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: scale(0.965) translateY(10px);
+    transition: opacity .28s ease, transform .38s cubic-bezier(.2,.8,.2,1);
   }
+  .lightbox.open img { opacity: 1; transform: none; }
   .lightbox-close {
     position: absolute;
     top: 20px; right: 24px;
@@ -3081,7 +3100,7 @@
       const max = h.scrollHeight - h.clientHeight;
       return max <= 0 ? 0 : Math.min(1, Math.max(0, h.scrollTop / max));
     };
-    const FLY_Y = 11;
+    const FLY_Y = 16;
     // Visible travel range on the top edge: inset enough that neither the
     // centre nor the wobble (±2.2px) nor the ±5.5° rotation clip the edge.
     // Effective half-width at ±5.5° rotation ≈ FLY_W/2 * cos + FLY_H/2 * sin ≈ 12.5px.
@@ -3161,7 +3180,7 @@
           const targetY = FLY_Y;
           x = lerp(home.x, targetX, ease);
           // Arc upward then land
-          const arc = 18;
+          const arc = 10;
           const straightY = lerp(home.y - 3, targetY, ease);
           ypos = straightY - arc * Math.sin(k * Math.PI);
           sx = lerp(1, FLY_W / HOME_W, ease);
@@ -3235,6 +3254,28 @@
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal, .exp-item').forEach(el => io.observe(el));
+
+  /* ---------- BACK TO TOP + SECTION FLASH ---------- */
+  const resolveSpotlightTarget = (hash) => {
+    if (!hash) return null;
+    const rawTarget = document.querySelector(hash);
+    if (!rawTarget) return null;
+    if (rawTarget.id === 'cases') return document.getElementById('case-01');
+    if (rawTarget.matches('section')) return rawTarget;
+    return rawTarget.closest('section') || rawTarget.nextElementSibling;
+  };
+  const flashSection = (el) => {
+    if (!el || prefersReducedMotion) return;
+    el.classList.remove('section-flash');
+    requestAnimationFrame(() => {
+      el.classList.add('section-flash');
+      setTimeout(() => el.classList.remove('section-flash'), 1100);
+    });
+  };
+  window.addEventListener('hashchange', () => {
+    const target = resolveSpotlightTarget(window.location.hash);
+    if (target) setTimeout(() => flashSection(target), prefersReducedMotion ? 0 : 120);
+  });
 
   /* ---------- COUNT-UP animation on stats ---------- */
   const animateCountUp = (el) => {
