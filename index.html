@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<base href="file:///Users/zaratustraloh/Downloads/" />
 <title>Кирилл Лифанов · Digital &amp; Content Manager</title>
 <meta name="description" content="Кирилл Лифанов — Digital &amp; Content Manager. Кейсы: Brand Safety (3,2 млн ₽ рисков закрыто), AI-автоматизация редакции (×3–10 к скорости), виральный контент (700K+ просмотров на одном посте)." />
 <meta name="author" content="Кирилл Лифанов" />
@@ -1077,6 +1078,17 @@
     border-top: 1px solid var(--rule);
     border-left: 1px solid var(--rule);
     margin-top: 40px;
+  }
+  .toolbox-intro {
+    max-width: 760px;
+    margin: 0 0 42px;
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .toolbox-intro em {
+    color: var(--accent);
+    font-style: normal;
   }
   .tool-cat {
     padding: 32px 28px;
@@ -2499,8 +2511,8 @@
   <div class="container">
     <div class="section-number">№&nbsp;04 · Toolbox</div>
     <div class="section-label">Инструменты и процессы</div>
-    <p class="section-lead">
-      Инструменты и процессы, которые я использую в ежедневной работе. Ничего лишнего.
+    <p class="toolbox-intro">
+      Только то, что использую в ежедневной работе и ничего <em>лишнего</em>.
     </p>
 
     <div class="toolbox-grid">
@@ -2814,13 +2826,13 @@
       /* 2. HEAD SQUAT (155ms): hard compression after head impact */
       await animate(stage, [
         { transform: 'translateY(0)    rotate(180deg) scale(1, 1)' },
-        { transform: 'translateY(26px) rotate(180deg) scale(1.34, 0.55)' }
+        { transform: 'translateY(23px) rotate(180deg) scale(1.29, 0.60)' }
       ], { duration: ms(155), easing: 'cubic-bezier(.28, 0, .35, 1)' });
-      commitTransform(stage, 'translateY(26px) rotate(180deg) scale(1.34, 0.55)');
+      commitTransform(stage, 'translateY(23px) rotate(180deg) scale(1.29, 0.60)');
 
       /* 2b. PRE-JUMP STRETCH (90ms): squash-and-stretch windup */
       await animate(stage, [
-        { transform: 'translateY(26px) rotate(180deg) scale(1.34, 0.55)' },
+        { transform: 'translateY(23px) rotate(180deg) scale(1.29, 0.60)' },
         { transform: 'translateY(14px) rotate(180deg) scale(0.85, 1.20)' }
       ], { duration: ms(90), easing: 'cubic-bezier(.34, 1.1, .65, 1)' });
       commitTransform(stage, 'translateY(14px) rotate(180deg) scale(0.85, 1.20)');
@@ -2843,14 +2855,14 @@
       /* 4. LAND SQUAT (140ms): absorb landing on legs */
       await animate(stage, [
         { transform: 'translateY(0)   rotate(360deg) scale(1.05, 0.95)' },
-        { transform: 'translateY(16px) rotate(360deg) scale(1.34, 0.56)' }
+        { transform: 'translateY(14px) rotate(360deg) scale(1.29, 0.60)' }
       ], { duration: ms(140), easing: 'cubic-bezier(.28, 0, .3, 1)' });
-      commitTransform(stage, 'translateY(16px) rotate(360deg) scale(1.34, 0.56)');
+      commitTransform(stage, 'translateY(14px) rotate(360deg) scale(1.29, 0.60)');
 
       /* 5. RECOVER (225ms): springs back to full height with overshoot */
       await animate(stage, [
-        { transform: 'translateY(16px) rotate(360deg) scale(1.34, 0.56)' },
-        { transform: 'translateY(-8px) rotate(360deg) scale(0.93, 1.10)', offset: 0.55 },
+        { transform: 'translateY(14px) rotate(360deg) scale(1.29, 0.60)' },
+        { transform: 'translateY(-7px) rotate(360deg) scale(0.94, 1.08)', offset: 0.55 },
         { transform: 'translateY(0)    rotate(360deg) scale(1, 1)' }
       ], { duration: ms(225), easing: 'cubic-bezier(.34, 1.45, .64, 1)' });
       commitTransform(stage, 'translateY(0) rotate(360deg) scale(1, 1)');
@@ -2899,6 +2911,11 @@
   if (isFinePointer && !prefersReducedMotion) {
     const ring = document.getElementById('cursor-ring');
     const dot  = document.getElementById('cursor-dot');
+    const eggModalEl = document.getElementById('egg-modal');
+    const eggCardEl = eggModalEl?.querySelector('.egg-card');
+    const casesModalEl = document.getElementById('cases-modal');
+    const casesCardEl = casesModalEl?.querySelector('.cases-card');
+    const mobileEl = document.getElementById('mobile-menu');
     document.documentElement.classList.add('has-magic-cursor');
 
     let mx = window.innerWidth / 2, my = window.innerHeight / 2;
@@ -2913,6 +2930,7 @@
         dot.classList.add('visible');
         visible = true;
       }
+      checkDarkUnderCursor();
     });
     document.addEventListener('mouseleave', () => {
       ring.classList.remove('visible');
@@ -2953,19 +2971,13 @@
     let wasOnDark = false;
     const checkDarkUnderCursor = () => {
       // Highest-priority overlays first
-      const eggModal = document.getElementById('egg-modal');
-      const eggCard  = eggModal?.querySelector('.egg-card');
-      const casesModal = document.getElementById('cases-modal');
-      const casesCard  = casesModal?.querySelector('.cases-card');
-      const mobile   = document.getElementById('mobile-menu');
-
       let onDark;
-      if (mobile?.classList.contains('open')) {
+      if (mobileEl?.classList.contains('open')) {
         onDark = true; // whole fullscreen mobile menu is dark
-      } else if (eggModal?.classList.contains('open')) {
-        onDark = !hitTest(eggCard);
-      } else if (casesModal?.classList.contains('open')) {
-        onDark = !hitTest(casesCard);
+      } else if (eggModalEl?.classList.contains('open')) {
+        onDark = !hitTest(eggCardEl);
+      } else if (casesModalEl?.classList.contains('open')) {
+        onDark = !hitTest(casesCardEl);
       } else {
         // Normal flow: check y against dark sections
         onDark = false;
@@ -2979,11 +2991,13 @@
         wasOnDark = onDark;
       }
     };
-    (function darkLoop() {
-      checkDarkUnderCursor();
-      requestAnimationFrame(darkLoop);
-    })();
+    const overlayObserver = new MutationObserver(checkDarkUnderCursor);
+    [mobileEl, eggModalEl, casesModalEl].filter(Boolean).forEach(el => {
+      overlayObserver.observe(el, { attributes: true, attributeFilter: ['class'] });
+    });
     window.addEventListener('scroll', checkDarkUnderCursor, { passive: true });
+    window.addEventListener('resize', checkDarkUnderCursor);
+    checkDarkUnderCursor();
   }
 
   /* ---------- TOPBAR / SCROLL-SPY / PARALLAX ---------- */
@@ -3081,9 +3095,12 @@
     // Reduced motion: no animation, just home vs flying
     const applyTransform = (x, y, sx, sy, rot) => {
       // Anchor the invader by its centre, then scale & rotate around centre.
-      invaderLive.style.transform =
+      const nextTransform =
         `translate(${x - HOME_W/2}px, ${y - HOME_H/2}px) ` +
         `scale(${sx}, ${sy}) rotate(${rot}deg)`;
+      if (nextTransform !== invaderLive.style.transform) {
+        invaderLive.style.transform = nextTransform;
+      }
     };
 
     const tick = (now) => {
