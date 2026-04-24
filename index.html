@@ -1323,11 +1323,26 @@
   .footer-inner {
     max-width: var(--maxw);
     margin: 0 auto;
-    display: flex; justify-content: space-between;
-    flex-wrap: wrap; gap: 20px;
-    align-items: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 28px;
+    align-items: start;
   }
-  footer span:last-child { color: #6B6558; font-size: 10.5px; }
+  .footer-meta { justify-self: end; }
+  .footer-legal {
+    grid-column: 1 / -1;
+    color: #6B6558;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    line-height: 1.45;
+    text-transform: none;
+    max-width: 72ch;
+  }
+  @media (max-width: 760px) {
+    .footer-inner { grid-template-columns: 1fr; gap: 10px; }
+    .footer-meta, .footer-legal { justify-self: start; }
+    .footer-legal { grid-column: auto; }
+  }
   /* Easter egg trigger (на тёмном футере) */
   .egg-trigger {
     display: inline-block;
@@ -1935,7 +1950,7 @@
         <div class="hero-role">Digital &amp; Content Manager</div>
         <div class="hero-badge">Выпускник СПбГУ · 2026</div>
         <p class="hero-pitch">
-          Превращаю редакционную рутину в систему, которая экономит бизнесу время и деньги. Специализируюсь на AI-автоматизации, Brand Safety и кратном росте вовлечённости в региональных медиа.
+          Выстраиваю работу редакций и соцсетей так, чтобы контент выходил быстро, безопасно и собирал охваты. Умею делегировать рутину нейросетям, купировать репутационные риски на старте и делать виральные заголовки даже из региональной повестки.
         </p>
         <div class="hero-meta">
           <div class="hero-meta-item">
@@ -2148,7 +2163,7 @@
         </div>
 
         <div class="case-pull">
-          «Если на вас натравили <em>робота</em>, бесполезно увеличивать штат. Берите своего робота и натравливайте его в ответ.»
+          «Когда на редакцию натравливают парсеры, раздувать штат модераторов <em>бессмысленно</em>. Проблему масштаба решает только <em>системный алгоритм</em>.»
         </div>
 
         <div data-rail-case="case-01" data-rail-step="r">
@@ -2252,10 +2267,6 @@
               <li><strong>Передал экспертизу команде</strong>: рабочие промпты на планёрках, разбор типовых галлюцинаций LLM (даты, фактура), базовые лайфхаки промпт-инжиниринга.</li>
             </ul>
           </div>
-        </div>
-
-        <div class="case-pull">
-          «Любой запрет — просто смена <em>инструментария</em>. Нет стоковых фото? Будем генерировать свои. <em>Быстрее</em> и <em>безопаснее</em>.»
         </div>
 
         <div data-rail-case="case-02" data-rail-step="r">
@@ -2388,7 +2399,7 @@
         </div>
 
         <div class="case-pull">
-          «Виральность — это не удача, это <em>социальная инженерия</em>. Фраза «Папа, держись» мгновенно запустила в комментариях вечный спор о том, кому тяжелее в декрете. Алгоритмы VK увидели живую дискуссию и сами выкинули пост в рекомендации.»
+          «Виральность — это не магия алгоритмов, а понимание <em>триггеров аудитории</em>. Заголовок в посте <em>"Папа, держись"</em> мгновенно запустил в комментариях вечный холивар о том, кому тяжелее в декрете. Дальше алгоритмы VK всё сделали сами.»
         </div>
 
         <div data-rail-case="case-03" data-rail-step="r">
@@ -2418,8 +2429,8 @@
     <!-- Headline showcase (from dossier) -->
     <div class="reveal">
       <div class="visuals-label" style="margin-top: 60px;">
-        <span>Витрина · заголовки, которые сработали</span>
-        <span>Шесть примеров</span>
+        <span>Витрина заголовков</span>
+        <span>Пять примеров</span>
       </div>
       <div class="showcase">
         <div class="headline-card record">
@@ -2439,16 +2450,11 @@
         </div>
         <div class="headline-card">
           <span class="ix">H · 04</span>
-          <div class="txt">Приземлились <em>целыми,</em> но не там, где хотели</div>
-          <div class="foot">Incident</div>
-        </div>
-        <div class="headline-card">
-          <span class="ix">H · 05</span>
           <div class="txt">Ваш таролог <em>скоро сядет:</em> готовится новый законопроект</div>
           <div class="foot">Law</div>
         </div>
         <div class="headline-card">
-          <span class="ix">H · 06</span>
+          <span class="ix">H · 05</span>
           <div class="txt">В деревне Порожек случилось <em>чудо…</em> с перьями</div>
           <div class="foot">Local</div>
         </div>
@@ -2492,9 +2498,9 @@
 <section id="toolbox">
   <div class="container">
     <div class="section-number">№&nbsp;04 · Toolbox</div>
-    <div class="section-label">Технический стек</div>
+    <div class="section-label">Инструменты и процессы</div>
     <p class="section-lead">
-      Только тот софт и механики, которыми я каждый день решаю реальные проблемы бизнеса. Без <em>модных слов</em> ради объёма.
+      Инструменты и процессы, которые я использую в ежедневной работе. Ничего лишнего.
     </p>
 
     <div class="toolbox-grid">
@@ -2663,8 +2669,8 @@
 <footer>
   <div class="footer-inner">
     <span>© MMXXVI<span class="egg-trigger" id="egg-trigger" title=" ">?</span> · Lifanov K. I.</span>
-    <span>Санкт-Петербург · СПбГУ · Международная журналистика</span>
-    <span>* Meta признана экстремистской организацией и запрещена на территории РФ</span>
+    <span class="footer-meta">Санкт-Петербург</span>
+    <span class="footer-legal">* Meta признана экстремистской организацией и запрещена на территории РФ</span>
   </div>
 </footer>
 
@@ -2785,66 +2791,71 @@
       el.style.transform = transform;
       if (opacity !== undefined) el.style.opacity = opacity;
     };
+    const INTRO_SPEED = 0.7;
+    const ms = (value) => Math.round(value * INTRO_SPEED);
 
     // === RUN SEQUENCE ===
     (async () => {
       // Label fades in alongside the action
       label?.animate(
         [{ opacity: 0 }, { opacity: 1 }],
-        { duration: 800, delay: 1600, fill: 'forwards', easing: 'ease-out' }
+        { duration: ms(600), delay: ms(1100), fill: 'forwards', easing: 'ease-out' }
       );
 
-      /* 1. FALL (900ms): from -120vh (rotated 180°) down to y=0.
+      /* 1. FALL (630ms): from -120vh (rotated 180°) down to y=0.
          ease-in simulates gravity acceleration. */
       await animate(stage, [
         { transform: 'translateY(-120vh) rotate(180deg) scale(1, 1)', opacity: 0 },
         { transform: 'translateY(-90vh)  rotate(180deg) scale(1, 1)', opacity: 1, offset: 0.1 },
         { transform: 'translateY(0)      rotate(180deg) scale(1, 1)', opacity: 1 }
-      ], { duration: 900, easing: 'cubic-bezier(.55, 0, .85, .3)' });
+      ], { duration: ms(630), easing: 'cubic-bezier(.55, 0, .85, .3)' });
       commitTransform(stage, 'translateY(0) rotate(180deg) scale(1, 1)', 1);
 
-      /* 2. HEAD SQUAT (260ms): hard compression after head impact — exaggerated */
+      /* 2. HEAD SQUAT (155ms): hard compression after head impact */
       await animate(stage, [
         { transform: 'translateY(0)    rotate(180deg) scale(1, 1)' },
-        { transform: 'translateY(22px) rotate(180deg) scale(1.28, 0.62)' }
-      ], { duration: 220, easing: 'cubic-bezier(.28, 0, .35, 1)' });
-      commitTransform(stage, 'translateY(22px) rotate(180deg) scale(1.28, 0.62)');
+        { transform: 'translateY(26px) rotate(180deg) scale(1.34, 0.55)' }
+      ], { duration: ms(155), easing: 'cubic-bezier(.28, 0, .35, 1)' });
+      commitTransform(stage, 'translateY(26px) rotate(180deg) scale(1.34, 0.55)');
 
-      /* 2b. PRE-JUMP STRETCH (120ms): squash-and-stretch — winds up before leaping */
+      /* 2b. PRE-JUMP STRETCH (90ms): squash-and-stretch windup */
       await animate(stage, [
-        { transform: 'translateY(22px) rotate(180deg) scale(1.28, 0.62)' },
+        { transform: 'translateY(26px) rotate(180deg) scale(1.34, 0.55)' },
         { transform: 'translateY(14px) rotate(180deg) scale(0.85, 1.20)' }
-      ], { duration: 130, easing: 'cubic-bezier(.34, 1.1, .65, 1)' });
+      ], { duration: ms(90), easing: 'cubic-bezier(.34, 1.1, .65, 1)' });
       commitTransform(stage, 'translateY(14px) rotate(180deg) scale(0.85, 1.20)');
 
-      /* 3. JUMP + FLIP (900ms, ONE continuous animation with per-keyframe easing).
-         Per-keyframe easing is the secret to seamless multi-phase motion —
-         each segment gets its own curve, but the animation is a single timeline. */
+      /* 3. JUMP + FLIP (640ms): dense WAAPI arc.
+         The apex is spread over several close keyframes, so the invader can
+         soften at the top without freezing or visually snapping into descent. */
       await animate(stage, [
-        { transform: 'translateY(14px)   rotate(180deg) scale(0.85, 1.20)', offset: 0,
-          easing: 'cubic-bezier(.15, .65, .25, 1)' },       // ascent: ease-out, explosive start
-        { transform: 'translateY(-105px) rotate(285deg) scale(1, 1)',       offset: 0.55,
-          easing: 'cubic-bezier(.55, 0, .85, .3)' },        // apex → descent: ease-in (gravity)
+        { transform: 'translateY(14px)   rotate(180deg) scale(0.85, 1.20)', offset: 0 },
+        { transform: 'translateY(-18px)  rotate(214deg) scale(0.92, 1.10)', offset: 0.16 },
+        { transform: 'translateY(-68px)  rotate(250deg) scale(0.98, 1.02)', offset: 0.33 },
+        { transform: 'translateY(-102px) rotate(286deg) scale(1, 1)',       offset: 0.48 },
+        { transform: 'translateY(-110px) rotate(304deg) scale(1, 1)',       offset: 0.56 },
+        { transform: 'translateY(-96px)  rotate(324deg) scale(1.01, 0.99)', offset: 0.66 },
+        { transform: 'translateY(-46px)  rotate(348deg) scale(1.03, 0.97)', offset: 0.84 },
         { transform: 'translateY(0)      rotate(360deg) scale(1.05, 0.95)', offset: 1 }
-      ], { duration: 900 });
+      ], { duration: ms(640), easing: 'linear' });
       commitTransform(stage, 'translateY(0) rotate(360deg) scale(1.05, 0.95)');
 
-      /* 4. LAND SQUAT (200ms): heavy absorption landing on legs */
+      /* 4. LAND SQUAT (140ms): absorb landing on legs */
       await animate(stage, [
         { transform: 'translateY(0)   rotate(360deg) scale(1.05, 0.95)' },
-        { transform: 'translateY(12px) rotate(360deg) scale(1.25, 0.65)' }
-      ], { duration: 200, easing: 'cubic-bezier(.28, 0, .3, 1)' });
-      commitTransform(stage, 'translateY(12px) rotate(360deg) scale(1.25, 0.65)');
+        { transform: 'translateY(16px) rotate(360deg) scale(1.34, 0.56)' }
+      ], { duration: ms(140), easing: 'cubic-bezier(.28, 0, .3, 1)' });
+      commitTransform(stage, 'translateY(16px) rotate(360deg) scale(1.34, 0.56)');
 
-      /* 5. RECOVER (320ms): springs back to full height with overshoot */
+      /* 5. RECOVER (225ms): springs back to full height with overshoot */
       await animate(stage, [
-        { transform: 'translateY(12px) rotate(360deg) scale(1.25, 0.65)' },
-        { transform: 'translateY(-6px) rotate(360deg) scale(0.94, 1.08)', offset: 0.55 },
+        { transform: 'translateY(16px) rotate(360deg) scale(1.34, 0.56)' },
+        { transform: 'translateY(-8px) rotate(360deg) scale(0.93, 1.10)', offset: 0.55 },
         { transform: 'translateY(0)    rotate(360deg) scale(1, 1)' }
-      ], { duration: 320, easing: 'cubic-bezier(.34, 1.45, .64, 1)' });
+      ], { duration: ms(225), easing: 'cubic-bezier(.34, 1.45, .64, 1)' });
       commitTransform(stage, 'translateY(0) rotate(360deg) scale(1, 1)');
 
-      /* 6. SHAKE (400ms): mild wiggles */
+      /* 6. SHAKE (280ms): mild wiggles */
       await animate(stage, [
         { transform: 'translateY(0) rotate(360deg)' },
         { transform: 'translateY(0) rotate(372deg)', offset: 0.2 },
@@ -2852,32 +2863,32 @@
         { transform: 'translateY(0) rotate(368deg)', offset: 0.6 },
         { transform: 'translateY(0) rotate(355deg)', offset: 0.8 },
         { transform: 'translateY(0) rotate(360deg)' }
-      ], { duration: 400, easing: 'linear' });
+      ], { duration: ms(280), easing: 'linear' });
       commitTransform(stage, 'translateY(0) rotate(360deg) scale(1, 1)');
 
-      /* 7. BLINK + BLINK on eyes, parallel. Hold body still. */
+      /* 7. BLINK + BLINK on eyes, parallel. */
       const blink = (eye) =>
         eye.animate([
           { transform: 'scaleY(1)' },
           { transform: 'scaleY(0.05)', offset: 0.5 },
           { transform: 'scaleY(1)' }
-        ], { duration: 180, easing: 'ease-in-out', fill: 'forwards' }).finished;
+        ], { duration: ms(150), easing: 'ease-in-out', fill: 'forwards' }).finished;
       const wait = (ms) => new Promise(r => setTimeout(r, ms));
 
-      await wait(300);
+      await wait(ms(200));
       await Promise.all([...eyes].map(e => blink(e)));
-      await wait(380);
+      await wait(ms(260));
       await Promise.all([...eyes].map(e => blink(e)));
 
       /* 8. Fade out overlay */
-      await wait(500);
+      await wait(ms(350));
       document.body.classList.add('intro-settled');
       sessionStorage.setItem(seenKey, '1');
 
       await animate(intro, [
         { opacity: 1 },
         { opacity: 0 }
-      ], { duration: 650, easing: 'cubic-bezier(.4, 0, .2, 1)' });
+      ], { duration: ms(500), easing: 'cubic-bezier(.4, 0, .2, 1)' });
 
       intro.style.display = 'none';
       document.body.classList.remove('intro-active');
