@@ -128,9 +128,28 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink);
+    position: relative;
+    padding: 4px 0;
     transition: color .25s ease;
   }
   .brand:hover { color: var(--ink); }
+  .brand::after {
+    content: "";
+    position: absolute;
+    left: 38px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(199,62,29,0.95), rgba(199,62,29,0));
+    opacity: 0;
+    transform: scaleX(0.2);
+    transform-origin: left;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s ease;
+  }
+  .brand:hover::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
   .brand-invader-slot {
     display: inline-block;
     width: 26px;
@@ -139,7 +158,14 @@
     /* Intentionally transparent — the real invader lives in #invader-live
        and rests on top of this slot when scrollY is near 0 */
   }
-  .brand-text { display: inline-block; }
+  .brand-text {
+    display: inline-block;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), color .25s ease;
+  }
+  .brand:hover .brand-text {
+    transform: translateX(3px);
+    color: var(--accent);
+  }
   .nav-links {
     display: flex; gap: clamp(16px, 2.5vw, 36px);
     font-size: 14px;
@@ -149,8 +175,28 @@
   }
   .nav-links a {
     position: relative;
+    isolation: isolate;
+    display: inline-block;
     padding: 4px 0;
     color: var(--ink-soft);
+    transform: translateY(0);
+    transition: color .28s ease, transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .nav-links a::before {
+    content: "";
+    position: absolute;
+    inset: -8px -10px;
+    border-radius: 999px;
+    background:
+      radial-gradient(90px circle at var(--hover-x, 50%) 50%,
+        rgba(199,62,29,0.16) 0%,
+        rgba(199,62,29,0.08) 38%,
+        rgba(199,62,29,0) 72%);
+    opacity: 0;
+    transform: scale(0.88);
+    transition: opacity .28s ease, transform .35s cubic-bezier(.2,.8,.2,1);
+    pointer-events: none;
+    z-index: -1;
   }
   .nav-links a::after {
     content: ""; position: absolute; left: 0; bottom: 0;
@@ -158,7 +204,17 @@
     background: var(--accent);
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform .25s ease;
+    transition: transform .32s cubic-bezier(.2,.8,.2,1);
+  }
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .nav-links a:hover::before,
+  .nav-links a.active::before {
+    opacity: 1;
+    transform: scale(1);
   }
   .nav-links a:hover::after { transform: scaleX(1); }
   .nav-links a.active {
@@ -425,7 +481,12 @@
     letter-spacing: 0.16em;
     text-transform: uppercase;
     border: 1px solid var(--ink);
-    transition: all .3s cubic-bezier(.2,.8,.2,1);
+    transition:
+      transform .3s cubic-bezier(.2,.8,.2,1),
+      color .3s cubic-bezier(.2,.8,.2,1),
+      background-color .3s cubic-bezier(.2,.8,.2,1),
+      border-color .3s cubic-bezier(.2,.8,.2,1),
+      box-shadow .35s cubic-bezier(.2,.8,.2,1);
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -445,7 +506,11 @@
   }
   .btn-primary:hover::before { transform: translateX(0); }
   .btn-primary > * { position: relative; z-index: 1; }
-  .btn-primary:hover { color: var(--paper); border-color: var(--accent); }
+  .btn-primary:hover {
+    color: var(--paper);
+    border-color: var(--accent);
+    box-shadow: 0 14px 28px rgba(199,62,29,0.18);
+  }
 
   .btn-ghost {
     background: transparent;
@@ -454,6 +519,7 @@
   .btn-ghost:hover {
     background: var(--ink);
     color: var(--paper);
+    box-shadow: 0 14px 28px rgba(37,34,30,0.14);
   }
   .btn .arrow {
     display: inline-block;
@@ -692,11 +758,12 @@
     border: 1px solid var(--rule);
     display: flex; flex-direction: column;
     gap: 14px;
-    transition: transform .3s ease, border-color .3s ease;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s ease, box-shadow .35s ease;
   }
   .reach-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
     border-color: var(--ink);
+    box-shadow: 0 24px 40px -28px rgba(0,0,0,0.28);
   }
   .reach-preview {
     aspect-ratio: 16 / 10;
@@ -1095,6 +1162,12 @@
     padding: 32px 28px;
     border-right: 1px solid var(--rule);
     border-bottom: 1px solid var(--rule);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), background .35s ease, border-color .35s ease, box-shadow .35s ease;
+  }
+  .tool-cat:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(180deg, rgba(199,62,29,0.04), rgba(199,62,29,0));
+    box-shadow: 0 24px 40px -30px rgba(0,0,0,0.22);
   }
   .tool-cat-label {
     font-family: var(--mono);
@@ -1274,6 +1347,46 @@
     display: flex; flex-direction: column;
     align-items: center;
     gap: 6px;
+    position: relative;
+    isolation: isolate;
+    padding: 14px 18px 16px;
+    border: 1px solid transparent;
+    border-radius: 24px;
+    transform: translateY(0);
+    transition:
+      transform .35s cubic-bezier(.2,.8,.2,1),
+      border-color .28s ease,
+      background-color .28s ease;
+  }
+  .contact-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      linear-gradient(180deg, rgba(241,236,226,0.035), rgba(241,236,226,0)),
+      radial-gradient(140px circle at var(--hover-x, 50%) var(--hover-y, 50%),
+        rgba(224,122,112,0.18) 0%,
+        rgba(224,122,112,0.07) 36%,
+        rgba(224,122,112,0) 76%);
+    opacity: 0;
+    transform: scale(0.97);
+    transition: opacity .35s ease, transform .4s cubic-bezier(.2,.8,.2,1);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .contact-link:hover {
+    transform: translateY(-4px);
+    border-color: rgba(224,122,112,0.2);
+    background-color: rgba(241,236,226,0.015);
+  }
+  .contact-link:hover::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .contact-link > * {
+    position: relative;
+    z-index: 1;
   }
   .contact-link-label {
     font-family: var(--mono);
@@ -1281,6 +1394,7 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: #9C9589;
+    transition: color .25s ease, letter-spacing .3s cubic-bezier(.2,.8,.2,1);
   }
   .contact-link-value {
     font-family: var(--serif);
@@ -1288,13 +1402,18 @@
     letter-spacing: -0.01em;
     color: #F1ECE2;
     border-bottom: 1px solid transparent;
-    transition: border-color .25s ease, color .25s ease;
+    transition: border-color .25s ease, color .25s ease, transform .35s cubic-bezier(.2,.8,.2,1);
     font-variation-settings: "opsz" 144;
     cursor: pointer;
+  }
+  .contact-link:hover .contact-link-label {
+    color: #B2A997;
+    letter-spacing: 0.22em;
   }
   .contact-link:hover .contact-link-value {
     border-bottom-color: #E07A70;
     color: #E07A70;
+    transform: translateY(-1px);
   }
   .contact-link .copy-hint {
     font-family: var(--mono);
@@ -1304,9 +1423,13 @@
     text-transform: uppercase;
     margin-top: 8px;
     opacity: 0;
-    transition: opacity .25s ease;
+    transform: translateY(5px);
+    transition: opacity .25s ease, transform .35s cubic-bezier(.2,.8,.2,1);
   }
-  .contact-link:hover .copy-hint { opacity: 1; }
+  .contact-link:hover .copy-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
   .contact-note {
     font-family: var(--serif);
     font-style: italic;
@@ -1399,6 +1522,55 @@
     filter: drop-shadow(0 2px 4px rgba(199,62,29,0.25));
   }
   .invader-live svg { display: block; width: 100%; height: 100%; }
+
+  .reach-card, .tool-cat, .principle, .case-metric, .headline-card, .visual {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .reach-card::before,
+  .tool-cat::before,
+  .principle::before,
+  .case-metric::before,
+  .headline-card::before,
+  .visual::before {
+    content: "";
+    position: absolute;
+    inset: -24%;
+    background:
+      radial-gradient(220px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+        rgba(199,62,29,0.14) 0%,
+        rgba(199,62,29,0.08) 28%,
+        rgba(199,62,29,0) 72%);
+    opacity: 0;
+    transition: opacity .35s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .reach-card:hover::before,
+  .reach-card.has-spotlight::before,
+  .tool-cat:hover::before,
+  .tool-cat.has-spotlight::before,
+  .principle:hover::before,
+  .principle.has-spotlight::before,
+  .case-metric:hover::before,
+  .case-metric.has-spotlight::before,
+  .headline-card:hover::before,
+  .headline-card.has-spotlight::before,
+  .visual:hover::before,
+  .visual.has-spotlight::before {
+    opacity: 1;
+  }
+  .reach-card > *,
+  .tool-cat > *,
+  .principle > *,
+  .case-metric > *,
+  .headline-card > * {
+    position: relative;
+    z-index: 1;
+  }
+  .visual img { position: relative; z-index: 1; }
+  .visual::after { z-index: 2; }
 
   .section-flash {
     animation: sectionFlash 1.05s cubic-bezier(.2,.8,.2,1);
@@ -1660,7 +1832,9 @@
     text-decoration: none;
     color: var(--ink);
     position: relative;
-    transition: color .2s ease;
+    isolation: isolate;
+    transform: translateX(0);
+    transition: color .24s ease, transform .38s cubic-bezier(.2,.8,.2,1);
   }
   .cases-list a::before {
     content: "";
@@ -1672,8 +1846,36 @@
     transform: translateY(-50%) scale(0);
     transition: transform .25s cubic-bezier(.2,.8,.2,1);
   }
-  .cases-list a:hover { color: var(--accent); }
+  .cases-list a::after {
+    content: "";
+    position: absolute;
+    inset: 8px -12px;
+    border-radius: 18px;
+    background:
+      linear-gradient(90deg,
+        rgba(199,62,29,0.12) 0%,
+        rgba(199,62,29,0.05) 45%,
+        rgba(199,62,29,0) 86%);
+    opacity: 0;
+    transform: translateX(-14px) scaleX(0.97);
+    transform-origin: left;
+    transition: opacity .35s ease, transform .42s cubic-bezier(.2,.8,.2,1);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .cases-list a > * {
+    position: relative;
+    z-index: 1;
+  }
+  .cases-list a:hover {
+    color: var(--accent);
+    transform: translateX(6px);
+  }
   .cases-list a:hover::before { transform: translateY(-50%) scale(1); }
+  .cases-list a:hover::after {
+    opacity: 1;
+    transform: translateX(0) scaleX(1);
+  }
   .cases-list .cases-num {
     font-family: var(--serif);
     font-style: italic;
@@ -1681,6 +1883,7 @@
     color: var(--accent);
     line-height: 1;
     font-variation-settings: "opsz" 144;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1);
   }
   .cases-list .cases-title {
     font-family: var(--serif);
@@ -1698,7 +1901,11 @@
     color: var(--mute);
     white-space: nowrap;
     text-align: right;
-    transition: color .2s ease;
+    transition: color .2s ease, transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .cases-list a:hover .cases-num,
+  .cases-list a:hover .cases-tag {
+    transform: translateX(2px);
   }
   .cases-list a:hover .cases-tag { color: var(--accent); }
   @media (max-width: 560px) {
@@ -1716,10 +1923,16 @@
      =============================================== */
   .reveal {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity .8s ease, transform .8s ease;
+    transform: translateY(26px) scale(0.985);
+    filter: blur(7px);
+    transition:
+      opacity .82s ease,
+      transform .82s cubic-bezier(.2,.8,.2,1),
+      filter .82s ease;
+    transition-delay: calc(var(--reveal-index, 0) * 70ms);
+    will-change: opacity, transform, filter;
   }
-  .reveal.in { opacity: 1; transform: none; }
+  .reveal.in { opacity: 1; transform: none; filter: blur(0); }
 
   /* ===============================================
      MAGIC CURSOR (desktop only)
@@ -2011,7 +2224,7 @@
       </div>
       <div class="hero-mark">
         <div class="hero-photo" id="hero-photo">
-          <img src="portrait.jpg" alt="Кирилл Лифанов — Digital &amp; Content Manager" />
+          <img src="portrait.jpg" alt="Кирилл Лифанов — Digital &amp; Content Manager" fetchpriority="high" decoding="async" />
         </div>
         <div class="monogram-caption">
           <span class="monogram-line">Lifanov&nbsp;·&nbsp;Kirill</span>
@@ -2108,35 +2321,35 @@
 
     <div class="reach-grid">
       <div class="reach-card reveal">
-        <div class="reach-preview"><img src="socialvk.jpg" alt="Шапка ВКонтакте" loading="lazy" /></div>
+        <div class="reach-preview"><img src="socialvk.jpg" alt="Шапка ВКонтакте" loading="lazy" decoding="async" /></div>
         <div>
           <div class="reach-label">ВКонтакте</div>
           <div class="reach-count">127,4K</div>
         </div>
       </div>
       <div class="reach-card reveal">
-        <div class="reach-preview"><img src="socialfb.png" alt="Шапка Facebook" loading="lazy" /></div>
+        <div class="reach-preview"><img src="socialfb.png" alt="Шапка Facebook" loading="lazy" decoding="async" /></div>
         <div>
           <div class="reach-label">Facebook*</div>
           <div class="reach-count">61K</div>
         </div>
       </div>
       <div class="reach-card reveal">
-        <div class="reach-preview"><img src="socialtg.png" alt="Шапка Telegram" loading="lazy" /></div>
+        <div class="reach-preview"><img src="socialtg.png" alt="Шапка Telegram" loading="lazy" decoding="async" /></div>
         <div>
           <div class="reach-label">Telegram</div>
           <div class="reach-count">20,3K</div>
         </div>
       </div>
       <div class="reach-card reveal">
-        <div class="reach-preview"><img src="socialmax.jpg" alt="Шапка MAX" loading="lazy" /></div>
+        <div class="reach-preview"><img src="socialmax.jpg" alt="Шапка MAX" loading="lazy" decoding="async" /></div>
         <div>
           <div class="reach-label">MAX</div>
           <div class="reach-count">17,2K</div>
         </div>
       </div>
       <div class="reach-card reveal">
-        <div class="reach-preview"><img src="socialok.png" alt="Шапка Одноклассники" loading="lazy" /></div>
+        <div class="reach-preview"><img src="socialok.png" alt="Шапка Одноклассники" loading="lazy" decoding="async" /></div>
         <div>
           <div class="reach-label">Одноклассники</div>
           <div class="reach-count">12K+</div>
@@ -2237,13 +2450,13 @@
       </div>
       <div class="c1-grid">
         <div class="visual complaint" data-zoom="case1complaint.jpg">
-          <img src="case1complaint.jpg" alt="Жалоба начальства на очередную судебную претензию" loading="lazy" />
+          <img src="case1complaint.jpg" alt="Жалоба начальства на очередную судебную претензию" loading="lazy" decoding="async" />
         </div>
         <div class="visual table-1" data-zoom="case1tablebreakdown.jpg">
-          <img src="case1tablebreakdown.jpg" alt="Таблица удалённых постов с разбивкой по платформам" loading="lazy" />
+          <img src="case1tablebreakdown.jpg" alt="Таблица удалённых постов с разбивкой по платформам" loading="lazy" decoding="async" />
         </div>
         <div class="visual table-2" data-zoom="case1tablesummary.jpg">
-          <img src="case1tablesummary.jpg" alt="Итоговая таблица обработанных постов" loading="lazy" />
+          <img src="case1tablesummary.jpg" alt="Итоговая таблица обработанных постов" loading="lazy" decoding="async" />
         </div>
       </div>
       <div class="visual-caption">
@@ -2340,19 +2553,19 @@
       </div>
       <div class="ai-gallery">
         <div class="visual" data-zoom="case2ai4.jpg">
-          <img src="case2ai4.jpg" alt="AI-заглушка: космонавт в очереди — налоги" loading="lazy" />
+          <img src="case2ai4.jpg" alt="AI-заглушка: космонавт в очереди — налоги" loading="lazy" decoding="async" />
         </div>
         <div class="visual" data-zoom="case2ai1.jpg">
-          <img src="case2ai1.jpg" alt="AI-заглушка: марафон — Спорт требует жертв" loading="lazy" />
+          <img src="case2ai1.jpg" alt="AI-заглушка: марафон — Спорт требует жертв" loading="lazy" decoding="async" />
         </div>
         <div class="visual" data-zoom="case2ai2.jpg">
-          <img src="case2ai2.jpg" alt="AI-заглушка: мопс с газетой" loading="lazy" />
+          <img src="case2ai2.jpg" alt="AI-заглушка: мопс с газетой" loading="lazy" decoding="async" />
         </div>
         <div class="visual" data-zoom="case2ai3.jpg">
-          <img src="case2ai3.jpg" alt="AI-заглушка: рыба на сковороде" loading="lazy" />
+          <img src="case2ai3.jpg" alt="AI-заглушка: рыба на сковороде" loading="lazy" decoding="async" />
         </div>
         <div class="visual" data-zoom="case2ai5.jpg">
-          <img src="case2ai5.jpg" alt="AI-заглушка: дрон и вышка связи — БПЛА" loading="lazy" />
+          <img src="case2ai5.jpg" alt="AI-заглушка: дрон и вышка связи — БПЛА" loading="lazy" decoding="async" />
         </div>
       </div>
       <div class="visual-caption">
@@ -2368,13 +2581,13 @@
       </div>
       <div class="c2-row2">
         <div class="visual" data-zoom="case2prompt.png">
-          <img src="case2prompt.png" alt="Отрывок системного промпта «Уютный циник»" loading="lazy" />
+          <img src="case2prompt.png" alt="Отрывок системного промпта «Уютный циник»" loading="lazy" decoding="async" />
         </div>
         <div class="visual" data-zoom="case2beforeafter1.png">
-          <img src="case2beforeafter1.png" alt="Сырой и готовый текст — пример 1" loading="lazy" />
+          <img src="case2beforeafter1.png" alt="Сырой и готовый текст — пример 1" loading="lazy" decoding="async" />
         </div>
         <div class="visual" data-zoom="case2beforeafter2.png">
-          <img src="case2beforeafter2.png" alt="Сырой и готовый текст — пример 2" loading="lazy" />
+          <img src="case2beforeafter2.png" alt="Сырой и готовый текст — пример 2" loading="lazy" decoding="async" />
         </div>
       </div>
       <div class="visual-caption">
@@ -2501,13 +2714,13 @@
       </div>
       <div class="c3-grid">
         <div class="visual record" data-zoom="case3record.png">
-          <img src="case3record.png" alt="Рекордный пост: Папа, держись — 700K+ просмотров" loading="lazy" />
+          <img src="case3record.png" alt="Рекордный пост: Папа, держись — 700K+ просмотров" loading="lazy" decoding="async" />
         </div>
         <div class="visual" data-zoom="case3viral2.png">
-          <img src="case3viral2.png" alt="Пост об Александре Маслякове — 31,8K просмотров" loading="lazy" />
+          <img src="case3viral2.png" alt="Пост об Александре Маслякове — 31,8K просмотров" loading="lazy" decoding="async" />
         </div>
         <div class="visual" data-zoom="case3viral3.png">
-          <img src="case3viral3.png" alt="Первый залетевший пост — аисты в деревне Порожек" loading="lazy" />
+          <img src="case3viral3.png" alt="Первый залетевший пост — аисты в деревне Порожек" loading="lazy" decoding="async" />
         </div>
       </div>
       <div class="visual-caption">
@@ -2532,7 +2745,7 @@
     <div class="section-number">№&nbsp;04 · Toolbox</div>
     <div class="section-label">Инструменты и процессы</div>
     <p class="toolbox-intro">
-      Только то, что использую в ежедневной работе и ничего <em>лишнего</em>.
+      Только то, что использую в ежедневной работе и <em>ничего лишнего</em>.
     </p>
 
     <div class="toolbox-grid">
@@ -2942,6 +3155,15 @@
     let rx = mx, ry = my;
     let visible = false;
 
+    let darkCheckFrame = 0;
+    const scheduleDarkCheck = () => {
+      if (darkCheckFrame) return;
+      darkCheckFrame = requestAnimationFrame(() => {
+        darkCheckFrame = 0;
+        checkDarkUnderCursor();
+      });
+    };
+
     document.addEventListener('mousemove', (e) => {
       mx = e.clientX; my = e.clientY;
       dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
@@ -2950,7 +3172,7 @@
         dot.classList.add('visible');
         visible = true;
       }
-      checkDarkUnderCursor();
+      scheduleDarkCheck();
     });
     document.addEventListener('mouseleave', () => {
       ring.classList.remove('visible');
@@ -3011,13 +3233,13 @@
         wasOnDark = onDark;
       }
     };
-    const overlayObserver = new MutationObserver(checkDarkUnderCursor);
+    const overlayObserver = new MutationObserver(scheduleDarkCheck);
     [mobileEl, eggModalEl, casesModalEl].filter(Boolean).forEach(el => {
       overlayObserver.observe(el, { attributes: true, attributeFilter: ['class'] });
     });
-    window.addEventListener('scroll', checkDarkUnderCursor, { passive: true });
-    window.addEventListener('resize', checkDarkUnderCursor);
-    checkDarkUnderCursor();
+    window.addEventListener('scroll', scheduleDarkCheck, { passive: true });
+    window.addEventListener('resize', scheduleDarkCheck);
+    scheduleDarkCheck();
   }
 
   /* ---------- TOPBAR / SCROLL-SPY / PARALLAX ---------- */
@@ -3328,6 +3550,16 @@
 
   /* ---------- MAGNETIC CTA + TILT cards (desktop only, no reduced motion) ---------- */
   if (!prefersReducedMotion && isFinePointer) {
+    document.querySelectorAll('.brand, .nav-links a, .btn, .contact-link, .cases-list a').forEach(el => {
+      const syncHoverPoint = (e) => {
+        const rect = el.getBoundingClientRect();
+        el.style.setProperty('--hover-x', `${e.clientX - rect.left}px`);
+        el.style.setProperty('--hover-y', `${e.clientY - rect.top}px`);
+      };
+      el.addEventListener('mouseenter', syncHoverPoint);
+      el.addEventListener('mousemove', syncHoverPoint);
+    });
+
     document.querySelectorAll('.btn').forEach(btn => {
       const strength = 0.18;
       btn.addEventListener('mousemove', (e) => {
