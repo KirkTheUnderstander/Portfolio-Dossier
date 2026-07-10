@@ -2998,7 +2998,6 @@
 <script>
   /* ---------- Shared utilities ---------- */
   const lerp = (a, b, n) => a + (b - a) * n;
-  const easeInOut = (t) => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
 
   /* ---------- Disable browser scroll restoration (fixes Safari opening page
      at a random scroll position from the previous session) ---------- */
@@ -3169,6 +3168,22 @@
     let mx = window.innerWidth / 2, my = window.innerHeight / 2;
     let rx = mx, ry = my;
     let visible = false;
+    let cursorFrame = 0;
+
+    const updateCursor = () => {
+      rx = lerp(rx, mx, 0.18);
+      ry = lerp(ry, my, 0.18);
+      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+
+      if (Math.abs(mx - rx) > 0.1 || Math.abs(my - ry) > 0.1) {
+        cursorFrame = requestAnimationFrame(updateCursor);
+      } else {
+        cursorFrame = 0;
+      }
+    };
+    const scheduleCursorUpdate = () => {
+      if (!cursorFrame) cursorFrame = requestAnimationFrame(updateCursor);
+    };
 
     let darkCheckFrame = 0;
     const scheduleDarkCheck = () => {
@@ -3187,6 +3202,7 @@
         dot.classList.add('visible');
         visible = true;
       }
+      scheduleCursorUpdate();
       scheduleDarkCheck();
     });
     document.addEventListener('mouseleave', () => {
@@ -3194,14 +3210,6 @@
       dot.classList.remove('visible');
       visible = false;
     });
-
-    // Smooth lerp for outer ring (uses global `lerp`)
-    (function loop() {
-      rx = lerp(rx, mx, 0.18);
-      ry = lerp(ry, my, 0.18);
-      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
-      requestAnimationFrame(loop);
-    })();
 
     // Hover states for interactive elements
     const hoverSelectors = 'a, button, .reach-card, .headline-card, .tool-cat, .contact-link, .egg-trigger, .burger, .visual, [data-zoom]';
@@ -3312,7 +3320,8 @@
   /* ---------- LIVE INVADER state machine ----------
      States: home → prep (400ms: squat/wiggle/launch) → flying (walks w/ wobble)
                     → returning (350ms) → home
-     Everything driven by one rAF loop that reads scrollY live. */
+     The animation loop runs only while the invader is moving; scroll and resize
+     wake it when a new position needs to be calculated. */
   (function () {
     if (!invaderLive) return;
 
@@ -3326,6 +3335,7 @@
     let state = 'home';
     let stateStart = 0;
     let returnFromX = 0, returnFromY = 0; // remembered pos at moment of return
+    let invaderFrame = 0;
 
     const getHome = () => {
       if (!invaderSlot) return { x: 24, y: 30 };
@@ -3360,7 +3370,12 @@
       }
     };
 
+    const scheduleTick = () => {
+      if (!invaderFrame) invaderFrame = requestAnimationFrame(tick);
+    };
+
     const tick = (now) => {
+      invaderFrame = 0;
       const y = window.scrollY;
       const pct = getScrollPct();
       const home = getHome();
@@ -3458,9 +3473,11 @@
         applyTransform(x, ypos, sx, sy, rot);
       }
 
-      requestAnimationFrame(tick);
+      if (state !== 'home') scheduleTick();
     };
-    requestAnimationFrame(tick);
+    window.addEventListener('scroll', scheduleTick, { passive: true });
+    window.addEventListener('resize', scheduleTick);
+    scheduleTick();
 
     // On resize, home position changes — state stays, tick will pick up new getHome()
   })();
