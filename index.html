@@ -1949,64 +1949,6 @@
   }
   .reveal.in { opacity: 1; transform: none; filter: blur(0); }
 
-  /* ===============================================
-     MAGIC CURSOR (desktop only)
-     =============================================== */
-  .cursor-ring, .cursor-dot {
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 999;
-    opacity: 0;
-    transition: opacity .3s ease;
-  }
-  .cursor-ring {
-    width: 30px; height: 30px;
-    border: 1.5px solid var(--ink-soft);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width .3s cubic-bezier(.2,.8,.2,1),
-                height .3s cubic-bezier(.2,.8,.2,1),
-                border-color .3s ease,
-                background .3s ease,
-                opacity .3s ease;
-  }
-  .cursor-dot {
-    width: 5px; height: 5px;
-    background: var(--ink-soft);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: background .3s ease, opacity .3s ease;
-  }
-  .cursor-ring.visible, .cursor-dot.visible { opacity: 1; }
-
-  /* Hover: accent for anything interactive (links, buttons, visuals) */
-  .cursor-ring.hover {
-    width: 54px; height: 54px;
-    border-color: var(--accent);
-    background: rgba(49,88,201, 0.08);
-  }
-  .cursor-dot.hover {
-    background: var(--accent);
-    opacity: 0;
-  }
-
-  /* On dark sections (manifesto, contact) invert to cream for contrast */
-  .manifesto, .contact { }
-  .on-dark .cursor-ring { border-color: #F1ECE2; }
-  .on-dark .cursor-dot  { background: #F1ECE2; }
-  .on-dark .cursor-ring.hover {
-    border-color: #8aa6ff;
-    background: rgba(138,166,255, 0.12);
-  }
-  .on-dark .cursor-dot.hover { background: #8aa6ff; }
-
-  /* Hide native cursor on pointer-fine devices */
-  @media (hover: hover) and (pointer: fine) {
-    html.has-magic-cursor, html.has-magic-cursor * {
-      cursor: none !important;
-    }
-  }
   .intro {
     position: fixed;
     inset: 0;
@@ -2140,10 +2082,6 @@
   </div>
   <div class="intro-label">Kirill Lifanov · MMXXVI</div>
 </div>
-
-<!-- Magic cursor elements -->
-<div class="cursor-ring" id="cursor-ring"></div>
-<div class="cursor-dot" id="cursor-dot"></div>
 
 <!-- ===============================================
      SCROLL PROGRESS + TOP BAR
@@ -3153,117 +3091,6 @@
       document.body.classList.remove('intro-active');
     })();
   })();
-
-  /* ---------- MAGIC CURSOR ---------- */
-  if (isFinePointer && !prefersReducedMotion) {
-    const ring = document.getElementById('cursor-ring');
-    const dot  = document.getElementById('cursor-dot');
-    const eggModalEl = document.getElementById('egg-modal');
-    const eggCardEl = eggModalEl?.querySelector('.egg-card');
-    const casesModalEl = document.getElementById('cases-modal');
-    const casesCardEl = casesModalEl?.querySelector('.cases-card');
-    const mobileEl = document.getElementById('mobile-menu');
-    document.documentElement.classList.add('has-magic-cursor');
-
-    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-    let rx = mx, ry = my;
-    let visible = false;
-    let cursorFrame = 0;
-
-    const updateCursor = () => {
-      rx = lerp(rx, mx, 0.18);
-      ry = lerp(ry, my, 0.18);
-      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
-
-      if (Math.abs(mx - rx) > 0.1 || Math.abs(my - ry) > 0.1) {
-        cursorFrame = requestAnimationFrame(updateCursor);
-      } else {
-        cursorFrame = 0;
-      }
-    };
-    const scheduleCursorUpdate = () => {
-      if (!cursorFrame) cursorFrame = requestAnimationFrame(updateCursor);
-    };
-
-    let darkCheckFrame = 0;
-    const scheduleDarkCheck = () => {
-      if (darkCheckFrame) return;
-      darkCheckFrame = requestAnimationFrame(() => {
-        darkCheckFrame = 0;
-        checkDarkUnderCursor();
-      });
-    };
-
-    document.addEventListener('mousemove', (e) => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
-      if (!visible) {
-        ring.classList.add('visible');
-        dot.classList.add('visible');
-        visible = true;
-      }
-      scheduleCursorUpdate();
-      scheduleDarkCheck();
-    });
-    document.addEventListener('mouseleave', () => {
-      ring.classList.remove('visible');
-      dot.classList.remove('visible');
-      visible = false;
-    });
-
-    // Hover states for interactive elements
-    const hoverSelectors = 'a, button, .reach-card, .headline-card, .tool-cat, .contact-link, .egg-trigger, .burger, .visual, [data-zoom]';
-    document.querySelectorAll(hoverSelectors).forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        ring.classList.add('hover');
-        dot.classList.add('hover');
-      });
-      el.addEventListener('mouseleave', () => {
-        ring.classList.remove('hover');
-        dot.classList.remove('hover');
-      });
-    });
-
-    // Auto-invert cursor colour over dark sections — based on actual cursor Y coord.
-    // Also handles "light islands on dark overlays" (egg-card inside egg-modal)
-    // and "dark islands on light" (mobile-menu overlay when open).
-    const darkSections = Array.from(document.querySelectorAll('.manifesto, .contact, footer'));
-    const hitTest = (el) => {
-      if (!el) return false;
-      const r = el.getBoundingClientRect();
-      return mx >= r.left && mx <= r.right && my >= r.top && my <= r.bottom;
-    };
-    let wasOnDark = false;
-    const checkDarkUnderCursor = () => {
-      // Highest-priority overlays first
-      let onDark;
-      if (mobileEl?.classList.contains('open')) {
-        onDark = true; // whole fullscreen mobile menu is dark
-      } else if (eggModalEl?.classList.contains('open')) {
-        onDark = !hitTest(eggCardEl);
-      } else if (casesModalEl?.classList.contains('open')) {
-        onDark = !hitTest(casesCardEl);
-      } else {
-        // Normal flow: check y against dark sections
-        onDark = false;
-        for (const sec of darkSections) {
-          const r = sec.getBoundingClientRect();
-          if (my >= r.top && my <= r.bottom) { onDark = true; break; }
-        }
-      }
-      if (onDark !== wasOnDark) {
-        document.documentElement.classList.toggle('on-dark', onDark);
-        wasOnDark = onDark;
-      }
-    };
-    const overlayObserver = new MutationObserver(scheduleDarkCheck);
-    [mobileEl, eggModalEl, casesModalEl].filter(Boolean).forEach(el => {
-      overlayObserver.observe(el, { attributes: true, attributeFilter: ['class'] });
-    });
-    window.addEventListener('scroll', scheduleDarkCheck, { passive: true });
-    window.addEventListener('resize', scheduleDarkCheck);
-    scheduleDarkCheck();
-  }
 
   /* ---------- TOPBAR / SCROLL-SPY / PARALLAX ---------- */
   const topbar = document.getElementById('topbar');
