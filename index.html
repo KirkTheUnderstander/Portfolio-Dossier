@@ -652,7 +652,7 @@
   .manifesto .section-number { color: #9C9589; }
   .manifesto-head {
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
+    grid-template-columns: 1.35fr .75fr;
     gap: clamp(40px, 6vw, 100px);
     margin-bottom: 80px;
     align-items: end;
@@ -668,17 +668,30 @@
   .manifesto-quote {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: clamp(38px, 5.4vw, 78px);
+    font-size: clamp(38px, 4.4vw, 64px);
     line-height: 1.04;
     letter-spacing: -0.018em;
     color: #F1F1EE;
     font-variation-settings: "opsz" 144;
   }
   .manifesto-quote em { color: #8aa6ff; font-style: italic; }
+  .manifesto-clause {
+    display: block;
+    white-space: nowrap;
+  }
   .manifesto-quote .qmark {
     color: #8aa6ff;
     font-style: italic;
     margin-right: .12em;
+  }
+  @media (max-width: 860px) {
+    .manifesto-quote { font-size: clamp(34px, 7vw, 54px); }
+  }
+  @media (max-width: 520px) {
+    .manifesto-quote {
+      font-size: clamp(28px, 7.4vw, 36px);
+      letter-spacing: -0.012em;
+    }
   }
   .manifesto-sub {
     font-family: var(--serif);
@@ -689,6 +702,25 @@
     max-width: 44ch;
   }
   .manifesto-sub em { color: #8aa6ff; }
+
+  .hero-pitch,
+  .manifesto-sub,
+  .principle p,
+  .star-block-text,
+  .case-pull,
+  .case-metric-label,
+  .aftermath-text,
+  .exp-summary,
+  .trajectory-list p,
+  .contact-note {
+    text-wrap: pretty;
+  }
+  .section-lead,
+  .case-title,
+  .trajectory-title,
+  .contact-lead {
+    text-wrap: balance;
+  }
 
   .principles {
     display: grid;
@@ -2137,7 +2169,7 @@
         <div class="hero-role">Digital &amp; Content Manager</div>
         <div class="hero-badge">Выпускник СПбГУ · 2026</div>
         <p class="hero-pitch">
-          Выстраиваю работу редакций и соцсетей так, чтобы контент выходил быстро, безопасно и собирал охваты. Умею делегировать рутину нейросетям, купировать репутационные риски на старте и делать виральные заголовки даже из региональной повестки.
+          Выстраиваю работу редакций и&nbsp;соцсетей так, чтобы&nbsp;контент выходил быстро, безопасно и&nbsp;собирал охваты. Умею делегировать рутину нейросетям, купировать репутационные риски на&nbsp;старте и&nbsp;делать виральные заголовки даже из&nbsp;региональной повестки.
         </p>
         <div class="hero-meta">
           <div class="hero-meta-item">
@@ -2150,7 +2182,7 @@
           </div>
           <div class="hero-meta-item">
             <span class="hero-meta-label">Статус</span>
-            <span class="hero-meta-value">Открыт к офферам</span>
+            <span class="hero-meta-value">Открыт к&nbsp;офферам</span>
           </div>
         </div>
         <div class="hero-cta">
@@ -2159,7 +2191,7 @@
             <span class="arrow">↓</span>
           </a>
           <a href="https://t.me/lacabeza_lifanov" target="_blank" rel="noopener" class="btn btn-ghost">
-            <span>Связаться в Telegram</span>
+            <span>Связаться в&nbsp;Telegram</span>
             <span class="arrow">→</span>
           </a>
         </div>
@@ -2186,7 +2218,7 @@
     <div class="stats-grid">
       <div class="stat reveal">
         <div class="stat-number"><span data-count data-target="225" data-suffix="">225</span><span class="unit">K+</span></div>
-        <div class="stat-label">совокупная аудитория пяти площадок на момент работы</div>
+        <div class="stat-label">совокупная аудитория пяти площадок на&nbsp;момент работы</div>
         <div class="stat-ref">Reach · 5 площадок</div>
       </div>
       <div class="stat reveal">
@@ -2196,12 +2228,12 @@
       </div>
       <div class="stat reveal">
         <div class="stat-number"><span data-count data-target="700" data-suffix="">700</span><span class="unit">K+</span></div>
-        <div class="stat-label">просмотров на рекордном посте — при медиане в 6–10&nbsp;тыс.</div>
+        <div class="stat-label">просмотров на&nbsp;рекордном посте&nbsp;—&nbsp;при&nbsp;медиане в&nbsp;6–10&nbsp;тыс.</div>
         <div class="stat-ref">№&nbsp;03 · Virality</div>
       </div>
       <div class="stat reveal">
         <div class="stat-number"><span data-count data-text="×3–10">×3–10</span></div>
-        <div class="stat-label">ускорение выпуска контента после перехода на AI-ассистирование</div>
+        <div class="stat-label">ускорение выпуска контента после перехода на&nbsp;AI-ассистирование</div>
         <div class="stat-ref">№&nbsp;02 · AI-workflow</div>
       </div>
     </div>
@@ -2217,11 +2249,11 @@
 
     <div class="manifesto-head">
       <blockquote class="manifesto-quote reveal">
-        <span class="qmark">“</span><em>Алгоритмам</em> — механику.<br />
-        <em>Человеку</em> — смыслы.
+        <span class="manifesto-clause"><span class="qmark">“</span><em>Алгоритмам</em>&nbsp;—&nbsp;механику.</span>
+        <span class="manifesto-clause"><em>Человеку</em>&nbsp;—&nbsp;смыслы.</span>
       </blockquote>
       <p class="manifesto-sub reveal">
-        Я слишком <em>ленив</em>, чтобы делать работу машин. И слишком уважаю свою профессию, чтобы поручать машинам работу с людьми. Мой подход прост: алгоритмы закрывают рутину, а я забираю себе всё самое интересное — концепции, эмоции и <em>живой</em> коннект.
+        Я&nbsp;слишком <em>ленив</em>, чтобы&nbsp;делать работу машин. И&nbsp;слишком уважаю свою профессию, чтобы&nbsp;поручать машинам работу с&nbsp;людьми. Мой подход прост: алгоритмы закрывают рутину, а&nbsp;я забираю себе всё самое интересное&nbsp;—&nbsp;концепции, эмоции и&nbsp;<em>живой</em> коннект.
       </p>
     </div>
 
@@ -2229,22 +2261,22 @@
       <div class="principle reveal">
         <div class="principle-roman">I.</div>
         <h3>Стратегическая лень</h3>
-        <p>Если задачу можно алгоритмизировать — она будет отдана нейросетям. Это быстрее, дешевле и исключает человеческий фактор. А сэкономленные часы мы тратим на то, за что нам реально платят: креатив, смыслы и работу с аудиторией.</p>
+        <p>Если задачу можно алгоритмизировать&nbsp;—&nbsp;она будет отдана нейросетям. Это быстрее, дешевле и&nbsp;исключает человеческий фактор. А&nbsp;сэкономленные часы мы&nbsp;тратим на&nbsp;то, за&nbsp;что нам реально платят: креатив, смыслы и&nbsp;работу с&nbsp;аудиторией.</p>
       </div>
       <div class="principle reveal">
         <div class="principle-roman">II.</div>
         <h3>Reverse-engineering</h3>
-        <p>Регулярно разбираю успешные кейсы коллег по рынку и адаптирую их механики под собственные задачи. Это экономит бюджет на тесты и страхует от ошибок, которые уже совершили другие.</p>
+        <p>Регулярно разбираю успешные кейсы коллег по&nbsp;рынку и&nbsp;адаптирую их механики под собственные задачи. Это экономит бюджет на&nbsp;тесты и&nbsp;страхует от&nbsp;ошибок, которые уже совершили другие.</p>
       </div>
       <div class="principle reveal">
         <div class="principle-roman">III.</div>
-        <h3>Brand Safety по умолчанию</h3>
-        <p>Сначала безопасность, потом охваты. Любой визуал и текст проходят внутренний фильтр на авторские права и репутационные риски до того, как уйдут в публикацию.</p>
+        <h3>Brand Safety по&nbsp;умолчанию</h3>
+        <p>Сначала безопасность, потом охваты. Любой визуал и&nbsp;текст проходят внутренний фильтр на&nbsp;авторские права и&nbsp;репутационные риски до&nbsp;того, как&nbsp;уйдут в&nbsp;публикацию.</p>
       </div>
       <div class="principle reveal">
         <div class="principle-roman">IV.</div>
         <h3>Tone of Voice через промпт</h3>
-        <p>Перевожу редполитику в чёткие промпты и алгоритмы. Это позволяет выпускать десятки постов в день, сохраняя единый стиль и высокое качество, независимо от того, кто сегодня на смене.</p>
+        <p>Перевожу редполитику в&nbsp;чёткие промпты и&nbsp;алгоритмы. Это позволяет выпускать десятки постов в&nbsp;день, сохраняя единый стиль и&nbsp;высокое качество, независимо от&nbsp;того, кто сегодня на&nbsp;смене.</p>
       </div>
     </div>
   </div>
@@ -2258,7 +2290,7 @@
     <div class="section-number">№&nbsp;03 · Reach</div>
     <div class="section-label">Пять площадок редакции</div>
     <p class="section-lead">
-      В&nbsp;«Петербургском дневнике» ежедневно выпускал контент на&nbsp;<em>пяти</em> площадках с&nbsp;совокупной аудиторией <em>225&nbsp;000+</em> подписчиков: 16–30 публикаций за рабочий день, 382+ за месяц.
+      В&nbsp;«Петербургском дневнике» ежедневно выпускал контент на&nbsp;<em>пяти</em> площадках с&nbsp;совокупной аудиторией <em>225&nbsp;000+</em> подписчиков: 16–30 публикаций за&nbsp;рабочий день, 382+ за&nbsp;месяц.
     </p>
 
     <div class="reach-grid">
@@ -2315,7 +2347,7 @@
       <div class="case-title-block">
         <div class="case-meta"><span class="case-tag">Brand Safety · Автоматизация</span><span class="read-time">~3 мин чтения</span></div>
         <h2 class="case-title">
-          Закрыл юридический риск&nbsp;<em>в 3,2&nbsp;млн&nbsp;₽</em> за 30&nbsp;минут
+          Закрыл юридический риск&nbsp;<em>в&nbsp;3,2&nbsp;млн&nbsp;₽</em> за&nbsp;30&nbsp;минут
         </h2>
       </div>
     </div>
@@ -2325,13 +2357,13 @@
         <div data-rail-case="case-01" data-rail-step="s">
           <div class="star-block-label">Situation</div>
           <div class="star-block-text">
-            Весной 2025-го редакцию «Петербургского дневника» начал атаковать правообладатель фотоконтента: автоматический парсер сканировал соцсети на нарушения, каждый иск — <strong>10–50&nbsp;тыс.&nbsp;₽</strong>. В зоне риска — архив из десятков тысяч публикаций за 5–6&nbsp;лет на четырёх платформах (VK, Telegram, OK, Facebook*).
+            Весной 2025-го редакцию «Петербургского дневника» начал атаковать правообладатель фотоконтента: автоматический парсер сканировал соцсети на&nbsp;нарушения, каждый иск&nbsp;—&nbsp;<strong>10–50&nbsp;тыс.&nbsp;₽</strong>. В&nbsp;зоне риска&nbsp;—&nbsp;архив из&nbsp;десятков тысяч публикаций за&nbsp;5–6&nbsp;лет на&nbsp;четырёх платформах (VK, Telegram, OK, Facebook*).
           </div>
         </div>
         <div data-rail-case="case-01" data-rail-step="t">
           <div class="star-block-label">Task</div>
           <div class="star-block-text">
-            Исходная постановка от менеджмента: <em>«почистить всё за пару дней»</em>. Ручной объём — 60+&nbsp;дней. И даже это не остановило бы роботов правообладателя в будущем.
+            Исходная постановка от&nbsp;менеджмента: <em>«почистить всё за&nbsp;пару дней»</em>. Ручной объём&nbsp;—&nbsp;60+&nbsp;дней. И&nbsp;даже это не&nbsp;остановило бы роботов правообладателя в&nbsp;будущем.
           </div>
         </div>
       </div>
@@ -2342,15 +2374,15 @@
           <div class="star-block-text">
             <ul>
               <li>Провёл оценку объёма, обосновал руководству нецелесообразность ручной чистки.</li>
-              <li>Через ChatGPT вывел <strong>список слов-маркеров</strong> — характерных лексических триггеров в подписях штрафных авторов («закат», «бутоны», «доброе утро» + имена авторов-источников).</li>
-              <li>Настроил <strong>онлайн-парсер</strong> по связке «площадка + дата + маркеры». Настройка — 30&nbsp;минут.</li>
+              <li>Через ChatGPT вывел <strong>список слов-маркеров</strong>&nbsp;—&nbsp;характерных лексических триггеров в&nbsp;подписях штрафных авторов («закат», «бутоны», «доброе утро» + имена авторов-источников).</li>
+              <li>Настроил <strong>онлайн-парсер</strong> по&nbsp;связке «площадка + дата + маркеры». Настройка&nbsp;—&nbsp;30&nbsp;минут.</li>
               <li>Прогнал проверочный скан, подтвердил отсутствие оставшихся нарушений.</li>
             </ul>
           </div>
         </div>
 
         <div class="case-pull">
-          «Когда на редакцию натравливают парсеры, раздувать штат модераторов <em>бессмысленно</em>. Проблему масштаба решает только <em>системный алгоритм</em>.»
+          «Когда на&nbsp;редакцию натравливают парсеры, раздувать штат модераторов <em>бессмысленно</em>. Проблему масштаба решает только <em>системный алгоритм</em>.»
         </div>
 
         <div data-rail-case="case-01" data-rail-step="r">
@@ -2358,15 +2390,15 @@
           <div class="case-metrics">
             <div class="case-metric">
               <div class="case-metric-value">4&nbsp;000<span class="unit">&nbsp;+</span></div>
-              <div class="case-metric-label">постов удалено на четырёх платформах</div>
+              <div class="case-metric-label">постов удалено на&nbsp;четырёх платформах</div>
             </div>
             <div class="case-metric">
               <div class="case-metric-value">320</div>
-              <div class="case-metric-label">с подтверждёнными нарушениями, остальные — превентивно</div>
+              <div class="case-metric-label">с&nbsp;подтверждёнными нарушениями, остальные&nbsp;—&nbsp;превентивно</div>
             </div>
             <div class="case-metric">
               <div class="case-metric-value">3,2<span class="unit">&nbsp;млн&nbsp;₽</span></div>
-              <div class="case-metric-label">нижняя граница предотвращённых исков (до 16&nbsp;млн&nbsp;₽ — верхняя)</div>
+              <div class="case-metric-label">нижняя граница предотвращённых исков (до&nbsp;16&nbsp;млн&nbsp;₽&nbsp;—&nbsp;верхняя)</div>
             </div>
             <div class="case-metric">
               <div class="case-metric-value">0</div>
@@ -2380,7 +2412,7 @@
     <div class="aftermath reveal">
       <div class="aftermath-label">Системный эффект</div>
       <div class="aftermath-text">
-        Внедрил в&nbsp;редакции политику brand safety: строгий запрет на публикацию изображений без подтверждённого источника, неформальный «чёрный список» авторов-рисков, стандарт AI-генерации заглушек. После финальной чистки новые иски не&nbsp;возникали.
+        Внедрил в&nbsp;редакции политику brand safety: строгий запрет на&nbsp;публикацию изображений без&nbsp;подтверждённого источника, неформальный «чёрный список» авторов-рисков, стандарт AI-генерации заглушек. После финальной чистки новые иски не&nbsp;возникали.
       </div>
     </div>
 
@@ -2403,10 +2435,10 @@
       </div>
       <div class="visual-caption">
         <span class="num">01</span>
-        <span>Переписка с руководством · контекст проблемы</span>
+        <span>Переписка с&nbsp;руководством · контекст проблемы</span>
         <span>·</span>
         <span class="num">02</span>
-        <span>Разбивка удалений по платформам: ВК&nbsp;1194 · ОК&nbsp;1024 · ФБ&nbsp;1082 · ТГ&nbsp;1032</span>
+        <span>Разбивка удалений по&nbsp;платформам: ВК&nbsp;1194 · ОК&nbsp;1024 · ФБ&nbsp;1082 · ТГ&nbsp;1032</span>
         <span>·</span>
         <span class="num">03</span>
         <span>Итоговый реестр обработанных публикаций</span>
@@ -2423,7 +2455,7 @@
       <div class="case-title-block">
         <div class="case-meta"><span class="case-tag">AI-production · Prompt Engineering</span><span class="read-time">~3 мин чтения</span></div>
         <h2 class="case-title">
-          Перевёл редакцию на&nbsp;<em>AI-ассистирование</em> и ускорил производство контента в&nbsp;3–10 раз
+          Перевёл редакцию на&nbsp;<em>AI-ассистирование</em> и&nbsp;ускорил производство контента в&nbsp;3–10 раз
         </h2>
       </div>
     </div>
@@ -2433,13 +2465,13 @@
         <div data-rail-case="case-02" data-rail-step="s">
           <div class="star-block-label">Situation</div>
           <div class="star-block-text">
-            Перекрыв кислород судебным троллям (Кейс&nbsp;01), мы создали проблему самой редакции: брать чужие фото больше нельзя, а план в <strong>16–30&nbsp;постов на 4&nbsp;площадках</strong> остался. Выбор был простой: раздувать штат дизайнеров и смириться с падением охватов. Или…
+            Перекрыв кислород судебным троллям (Кейс&nbsp;01), мы&nbsp;создали проблему самой редакции: брать чужие фото больше нельзя, а&nbsp;план в&nbsp;<strong>16–30&nbsp;постов на&nbsp;4&nbsp;площадках</strong> остался. Выбор был простой: раздувать штат дизайнеров и&nbsp;смириться с&nbsp;падением охватов. Или…
           </div>
         </div>
         <div data-rail-case="case-02" data-rail-step="t">
           <div class="star-block-label">Task</div>
           <div class="star-block-text">
-            Сохранить объёмы и качество контента без найма новых людей. Найти легальную и масштабируемую альтернативу стоковому визуалу.
+            Сохранить объёмы и&nbsp;качество контента без&nbsp;найма новых людей. Найти легальную и&nbsp;масштабируемую альтернативу стоковому визуалу.
           </div>
         </div>
       </div>
@@ -2449,9 +2481,9 @@
           <div class="star-block-label">Action</div>
           <div class="star-block-text">
             <ul>
-              <li>Разработал <strong>системные промпты</strong>, которые кодифицируют Tone of Voice редакции, структуру заголовков и смысловые акценты.</li>
-              <li>Внедрил <strong>нейрогенерацию визуальных заглушек</strong> через DALL·E и автоматическое брендирование собственных фото/видео.</li>
-              <li><strong>Передал экспертизу команде</strong>: рабочие промпты на планёрках, разбор типовых галлюцинаций LLM (даты, фактура), базовые лайфхаки промпт-инжиниринга.</li>
+              <li>Разработал <strong>системные промпты</strong>, которые кодифицируют Tone of Voice редакции, структуру заголовков и&nbsp;смысловые акценты.</li>
+              <li>Внедрил <strong>нейрогенерацию визуальных заглушек</strong> через DALL·E и&nbsp;автоматическое брендирование собственных фото/видео.</li>
+              <li><strong>Передал экспертизу команде</strong>: рабочие промпты на&nbsp;планёрках, разбор типовых галлюцинаций LLM (даты, фактура), базовые лайфхаки промпт-инжиниринга.</li>
             </ul>
           </div>
         </div>
@@ -2461,11 +2493,11 @@
           <div class="case-metrics">
             <div class="case-metric">
               <div class="case-metric-value">7–20<span class="unit">&nbsp;→ 1–5 мин</span></div>
-              <div class="case-metric-label">время на производство одного поста (замер по собственному workflow)</div>
+              <div class="case-metric-label">время на&nbsp;производство одного поста (замер по&nbsp;собственному workflow)</div>
             </div>
             <div class="case-metric">
               <div class="case-metric-value">×3–10</div>
-              <div class="case-metric-label">рост скорости выпуска контента на полной смене</div>
+              <div class="case-metric-label">рост скорости выпуска контента на&nbsp;полной смене</div>
             </div>
             <div class="case-metric">
               <div class="case-metric-value">100<span class="unit">&nbsp;%</span></div>
@@ -2473,7 +2505,7 @@
             </div>
             <div class="case-metric">
               <div class="case-metric-value">0</div>
-              <div class="case-metric-label">новых исков по авторскому праву — юридический риск снят</div>
+              <div class="case-metric-label">новых исков по&nbsp;авторскому праву&nbsp;—&nbsp;юридический риск снят</div>
             </div>
           </div>
         </div>
@@ -2483,14 +2515,14 @@
     <div class="aftermath reveal">
       <div class="aftermath-label">Побочный эффект</div>
       <div class="aftermath-text">
-        Частота фактических ошибок в публикациях стала на уровне статистической погрешности (в основном — редкие галлюцинации LLM по датам, отлавливаются на редактуре).
+        Частота фактических ошибок в&nbsp;публикациях стала на&nbsp;уровне статистической погрешности (в&nbsp;основном&nbsp;—&nbsp;редкие галлюцинации LLM по&nbsp;датам, отлавливаются на&nbsp;редактуре).
       </div>
     </div>
 
     <!-- AI gallery -->
     <div class="visuals reveal">
       <div class="visuals-label">
-        <span>Витрина · нейрозаглушки в публикациях</span>
+        <span>Витрина · нейрозаглушки в&nbsp;публикациях</span>
         <span>DALL·E · собственный промпт-стек</span>
       </div>
       <div class="ai-gallery">
@@ -2511,14 +2543,14 @@
         </div>
       </div>
       <div class="visual-caption">
-        <span>Все визуалы — оригинальная генерация с брендингом «Петербургского дневника». Zero copyright risk.</span>
+        <span>Все визуалы&nbsp;—&nbsp;оригинальная генерация с&nbsp;брендингом «Петербургского дневника». Zero copyright risk.</span>
       </div>
     </div>
 
     <!-- Prompt + before/after -->
     <div class="visuals reveal">
       <div class="visuals-label">
-        <span>Закулисье · промпт-стек и обработка сырых пресс-релизов</span>
+        <span>Закулисье · промпт-стек и&nbsp;обработка сырых пресс-релизов</span>
         <span>Клик → увеличить</span>
       </div>
       <div class="c2-row2">
@@ -2534,10 +2566,10 @@
       </div>
       <div class="visual-caption">
         <span class="num">01</span>
-        <span>Фрагмент системного промпта «Уютный циник» — кодифицированный ToV редакции</span>
+        <span>Фрагмент системного промпта «Уютный циник»&nbsp;—&nbsp;кодифицированный ToV редакции</span>
         <span>·</span>
         <span class="num">02–03</span>
-        <span>До/после: брифы автора → готовые посты в фирменной тональности</span>
+        <span>До/после: брифы автора → готовые посты в&nbsp;фирменной тональности</span>
       </div>
     </div>
   </div>
@@ -2551,7 +2583,7 @@
       <div class="case-title-block">
         <div class="case-meta"><span class="case-tag">Virality · Headline Architecture</span><span class="read-time">~3 мин чтения</span></div>
         <h2 class="case-title">
-          От медианных 6–10&nbsp;тыс. просмотров — к&nbsp;<em>700&nbsp;000+</em> на одном посте
+          От&nbsp;медианных 6–10&nbsp;тыс. просмотров до&nbsp;<em>700&nbsp;000+</em> на&nbsp;одном посте
         </h2>
       </div>
     </div>
@@ -2561,13 +2593,13 @@
         <div data-rail-case="case-03" data-rail-step="s">
           <div class="star-block-label">Situation</div>
           <div class="star-block-text">
-            Средний региональный пост собирает <strong>20–60 лайков</strong> и благополучно умирает. Чтобы пробить баннерную слепоту — нужен триггер. Выход за эти рамки требует нестандартной упаковки инфоповода, но строго внутри правового и репутационного поля издания.
+            Средний региональный пост собирает <strong>20–60 лайков</strong> и&nbsp;благополучно умирает. Чтобы&nbsp;пробить баннерную слепоту&nbsp;—&nbsp;нужен триггер. Выход за&nbsp;эти рамки требует нестандартной упаковки инфоповода, но&nbsp;строго внутри правового и&nbsp;репутационного поля издания.
           </div>
         </div>
         <div data-rail-case="case-03" data-rail-step="t">
           <div class="star-block-label">Task</div>
           <div class="star-block-text">
-            Найти баланс между кликбейтом и Brand Safety. Упаковать локальную скуку в виральный формат, не подставив редакцию репутационно и юридически.
+            Найти баланс между кликбейтом и&nbsp;Brand Safety. Упаковать локальную скуку в&nbsp;виральный формат, не&nbsp;подставив редакцию репутационно и&nbsp;юридически.
           </div>
         </div>
       </div>
@@ -2577,16 +2609,16 @@
           <div class="star-block-label">Action</div>
           <div class="star-block-text">
             <ul>
-              <li><strong>Поиск триггера:</strong> вытаскиваю из скучных пресс-релизов абсурд, конфликт или живую эмоцию.</li>
-              <li><strong>Архитектура заголовка:</strong> бью по болям аудитории через смысловые контрасты, иронию и инверсию ожиданий — вместо сухого канцелярита.</li>
-              <li><strong>Вовлекающие механики:</strong> кидаю авторский ироничный комментарий после новости для запуска дискуссии.</li>
-              <li><strong>Зачистка треда:</strong> жёстко режу спам и откровенный неадекват, оставляя только чистую органическую вовлечённость.</li>
+              <li><strong>Поиск триггера:</strong> вытаскиваю из&nbsp;скучных пресс-релизов абсурд, конфликт или&nbsp;живую эмоцию.</li>
+              <li><strong>Архитектура заголовка:</strong> бью по&nbsp;болям аудитории через смысловые контрасты, иронию и&nbsp;инверсию ожиданий&nbsp;—&nbsp;вместо сухого канцелярита.</li>
+              <li><strong>Вовлекающие механики:</strong> кидаю авторский ироничный комментарий после новости для&nbsp;запуска дискуссии.</li>
+              <li><strong>Зачистка треда:</strong> жёстко режу спам и&nbsp;откровенный неадекват, оставляя только чистую органическую вовлечённость.</li>
             </ul>
           </div>
         </div>
 
         <div class="case-pull">
-          «Виральность — это не магия алгоритмов, а понимание <em>триггеров аудитории</em>. Заголовок в посте <em>"Папа, держись"</em> мгновенно запустил в комментариях вечный холивар о том, кому тяжелее в декрете. Дальше алгоритмы VK всё сделали сами.»
+          «Виральность&nbsp;—&nbsp;это не&nbsp;магия алгоритмов, а&nbsp;понимание <em>триггеров аудитории</em>. Заголовок в&nbsp;посте <em>"Папа, держись"</em> мгновенно запустил в&nbsp;комментариях вечный холивар о&nbsp;том, кому тяжелее в&nbsp;декрете. Дальше алгоритмы VK всё сделали сами.»
         </div>
 
         <div data-rail-case="case-03" data-rail-step="r">
@@ -2594,11 +2626,11 @@
           <div class="case-metrics">
             <div class="case-metric">
               <div class="case-metric-value">700<span class="unit">K+</span></div>
-              <div class="case-metric-label">просмотров на рекордном посте (подтверждено аналитикой площадки)</div>
+              <div class="case-metric-label">просмотров на&nbsp;рекордном посте (подтверждено аналитикой площадки)</div>
             </div>
             <div class="case-metric">
               <div class="case-metric-value">3&nbsp;092</div>
-              <div class="case-metric-label">реакций на том же посте · 1&nbsp;020 репостов</div>
+              <div class="case-metric-label">реакций на&nbsp;том же посте · 1&nbsp;020 репостов</div>
             </div>
             <div class="case-metric">
               <div class="case-metric-value">×75–125</div>
@@ -2606,7 +2638,7 @@
             </div>
             <div class="case-metric">
               <div class="case-metric-value">×5–17</div>
-              <div class="case-metric-label">рост вовлечённости на регулярных «залетающих» постах</div>
+              <div class="case-metric-label">рост вовлечённости на&nbsp;регулярных «залетающих» постах</div>
             </div>
           </div>
         </div>
@@ -2622,17 +2654,17 @@
       <div class="showcase">
         <div class="headline-card record">
           <span class="ix">H · 01 · рекорд</span>
-          <div class="txt">Папа, <em>держись:</em> в Петербурге родились четыре абсолютно одинаковые девочки</div>
+          <div class="txt">Папа, <em>держись:</em> в&nbsp;Петербурге родились четыре абсолютно одинаковые девочки</div>
           <div class="foot" style="color:var(--accent);">700&nbsp;000+ просмотров · 3&nbsp;092 реакций</div>
         </div>
         <div class="headline-card">
           <span class="ix">H · 02</span>
-          <div class="txt">Хотел <em>спокойствия,</em> а получил копытом в голову: грустная история одного осла</div>
+          <div class="txt">Хотел <em>спокойствия,</em> а&nbsp;получил копытом в&nbsp;голову: грустная история одного осла</div>
           <div class="foot">Human interest</div>
         </div>
         <div class="headline-card">
           <span class="ix">H · 03</span>
-          <div class="txt">Хочешь водку — <em>ешь котлеты:</em> барам без кухонь в Петербурге ограничат продажу алкоголя</div>
+          <div class="txt">Хочешь водку&nbsp;—&nbsp;<em>ешь котлеты:</em> барам без&nbsp;кухонь в&nbsp;Петербурге ограничат продажу алкоголя</div>
           <div class="foot">City policy</div>
         </div>
         <div class="headline-card">
@@ -2642,7 +2674,7 @@
         </div>
         <div class="headline-card">
           <span class="ix">H · 05</span>
-          <div class="txt">В деревне Порожек случилось <em>чудо…</em> с перьями</div>
+          <div class="txt">В&nbsp;деревне Порожек случилось <em>чудо…</em> с&nbsp;перьями</div>
           <div class="foot">Local</div>
         </div>
       </div>
@@ -2651,8 +2683,8 @@
     <!-- Viral posts visuals (proofs) -->
     <div class="visuals reveal">
       <div class="visuals-label">
-        <span>Пруфы · залетевшие посты с авторством</span>
-        <span>Скрины из админки площадки</span>
+        <span>Пруфы · залетевшие посты с&nbsp;авторством</span>
+        <span>Скрины из&nbsp;админки площадки</span>
       </div>
       <div class="c3-grid">
         <div class="visual record" data-zoom="case3record.png">
@@ -2673,7 +2705,7 @@
         <span>«Умер Александр Масляков» · 31,8K просмотров · автор: Кирилл Лифанов</span>
         <span>·</span>
         <span class="num">03</span>
-        <span>«Чудо с перьями» в деревне Порожек — первая вирусочка на проекте</span>
+        <span>«Чудо с&nbsp;перьями» в&nbsp;деревне Порожек&nbsp;—&nbsp;первая вирусочка на&nbsp;проекте</span>
       </div>
     </div>
   </div>
@@ -2685,9 +2717,9 @@
 <section id="toolbox">
   <div class="container">
     <div class="section-number">№&nbsp;04 · Toolbox</div>
-    <div class="section-label">Инструменты и процессы</div>
+    <div class="section-label">Инструменты и&nbsp;процессы</div>
     <p class="toolbox-intro">
-      Только то, что использую в ежедневной работе и <em>ничего лишнего</em>.
+      Только то, что&nbsp;использую в&nbsp;ежедневной работе и&nbsp;<em>ничего лишнего</em>.
     </p>
 
     <div class="toolbox-grid">
@@ -2732,7 +2764,7 @@
           <li>Figma</li>
           <li>Парсеры <span class="note">архивный аудит</span></li>
           <li>Фактчекинг · верификация</li>
-          <li>Работа с экспертами</li>
+          <li>Работа с&nbsp;экспертами</li>
         </ul>
       </div>
     </div>
@@ -2745,52 +2777,52 @@
 <section id="timeline">
   <div class="container">
     <div class="section-number">№&nbsp;05 · Track record</div>
-    <div class="section-label">Опыт и образование</div>
+    <div class="section-label">Опыт и&nbsp;образование</div>
 
     <div class="about-grid">
       <div>
         <p class="section-lead" style="font-size: clamp(22px, 2.8vw, 30px); margin-bottom: 0;">
-          Два года в региональном медиа, учебная практика в аналитической редакции и <em>pet-проект</em> с полным циклом performance-маркетинга за плечами.
+          Два года в&nbsp;региональном медиа, учебная практика в&nbsp;аналитической редакции и&nbsp;<em>pet-проект</em> с&nbsp;полным циклом performance-маркетинга за&nbsp;плечами.
         </p>
       </div>
       <div class="about-exp">
         <div class="exp-item reveal">
-          <div class="exp-date">Май 2024 —<br />июнь 2026</div>
+          <div class="exp-date">Май 2024<br />июнь 2026</div>
           <div>
             <div class="exp-title">Контент-менеджер <span style="font-style: italic; color: var(--mute); font-size: 0.75em;">(самозанятый)</span></div>
             <div class="exp-org">Петербургский дневник · городская редакция</div>
             <div class="exp-summary">
-              Выпускал ежедневный контент на&nbsp;4–5 площадках (225K+ подписчиков), 382+ публикаций в месяц по договору. Реализовал аудит архива на авторские права (4&nbsp;000+ проверено, 320 нарушений устранено, иски до 3,2&nbsp;млн&nbsp;₽ закрыты). Запустил процесс brand safety и внедрил AI-инструменты в редакционный workflow.
+              Выпускал ежедневный контент на&nbsp;4–5 площадках (225K+ подписчиков), 382+ публикаций в&nbsp;месяц по&nbsp;договору. Реализовал аудит архива на&nbsp;авторские права (4&nbsp;000+ проверено, 320 нарушений устранено, иски до&nbsp;3,2&nbsp;млн&nbsp;₽ закрыты). Запустил процесс brand safety и&nbsp;внедрил AI-инструменты в&nbsp;редакционный workflow.
             </div>
           </div>
         </div>
         <div class="exp-item reveal">
-          <div class="exp-date">Июнь —<br />июль 2023</div>
+          <div class="exp-date">Июнь&nbsp;—&nbsp;июль<br />2023</div>
           <div>
             <div class="exp-title">Контент-ассистент <span style="font-style: italic; color: var(--mute); font-size: 0.75em;">(учебная практика)</span></div>
             <div class="exp-org">НКО «Если быть точным» · аналитическое медиа</div>
             <div class="exp-summary">
-              Работа с open data по социально значимым темам, подготовка аналитических справок. Самостоятельно запитчил и разработал материал «Стоимость человеческой жизни в экономике РФ»: гипотеза, источники, интервью с профессором НИУ ВШЭ. Прокачал фактчекинг и работу с экспертами.
+              Работа с&nbsp;open data по&nbsp;социально значимым темам, подготовка аналитических справок. Самостоятельно запитчил и&nbsp;разработал материал «Стоимость человеческой жизни в&nbsp;экономике РФ»: гипотеза, источники, интервью с&nbsp;профессором НИУ ВШЭ. Прокачал фактчекинг и&nbsp;работу с&nbsp;экспертами.
             </div>
           </div>
         </div>
         <div class="exp-item reveal">
-          <div class="exp-date">2020 —<br />2022</div>
+          <div class="exp-date">2020–2022</div>
           <div>
             <div class="exp-title">Основатель, автор <span style="font-style: italic; color: var(--mute); font-size: 0.75em;">(pet-проект)</span></div>
             <div class="exp-org">Telegram-канал · performance-маркетинг</div>
             <div class="exp-summary">
-              Полный цикл: контент-стратегия, закупка трафика, аналитика. Снизил стоимость подписчика <strong>в 6 раз</strong> — с 26&nbsp;₽ до 4,4&nbsp;₽ — через системный отбор доноров и A/B-тестирование креативов. Собрал аудиторию 800+ на личном бюджете.
+              Полный цикл: контент-стратегия, закупка трафика, аналитика. Снизил стоимость подписчика <strong>в&nbsp;6 раз</strong>&nbsp;—&nbsp;с&nbsp;26&nbsp;₽ до&nbsp;4,4&nbsp;₽&nbsp;—&nbsp;через системный отбор доноров и&nbsp;A/B-тестирование креативов. Собрал аудиторию 800+ на&nbsp;личном бюджете.
             </div>
           </div>
         </div>
         <div class="exp-item reveal">
-          <div class="exp-date">2022 —<br />2026</div>
+          <div class="exp-date">2022–2026</div>
           <div>
             <div class="exp-title">Бакалавриат · Международная журналистика</div>
-            <div class="exp-org">СПбГУ · Высшая школа журналистики и массовых коммуникаций</div>
+            <div class="exp-org">СПбГУ · Высшая школа журналистики и&nbsp;массовых коммуникаций</div>
             <div class="exp-summary">
-              Английский B2 (DET в процессе сдачи). Специализация — международная повестка, медиа-менеджмент, цифровые редакции.
+              Английский B2 (DET в&nbsp;процессе сдачи). Специализация&nbsp;—&nbsp;международная повестка, медиа-менеджмент, цифровые редакции.
             </div>
           </div>
         </div>
@@ -2810,13 +2842,13 @@
     <div class="trajectory-grid">
       <div>
         <h2 class="trajectory-title reveal">
-          Вырасти до <em>руководителя направления</em> (Digital&nbsp;/ бренд-медиа), который отвечает за контент-продукт целиком.
-          <span class="trajectory-sub">— горизонт 1–3 года и где могу быть полезен сейчас.</span>
+          Вырасти до&nbsp;<em>руководителя направления</em> (Digital&nbsp;/ бренд-медиа), который отвечает за&nbsp;контент-продукт целиком.
+          <span class="trajectory-sub">Горизонт&nbsp;—&nbsp;1–3 года; где могу быть полезен сейчас.</span>
         </h2>
       </div>
       <ol class="trajectory-list">
-        <li class="reveal"><p>Креативные агентства, бренд-медиа и in-house команды, где контент решает конкретные бизнес-задачи.</p></li>
-        <li class="reveal"><p>Позиции на стыке контент-менеджмента, оценки репутационных рисков и внедрения AI-инструментов в производство.</p></li>
+        <li class="reveal"><p>Креативные агентства, бренд-медиа и&nbsp;in-house команды, где контент решает конкретные бизнес-задачи.</p></li>
+        <li class="reveal"><p>Позиции на&nbsp;стыке контент-менеджмента, оценки репутационных рисков и&nbsp;внедрения AI-инструментов в&nbsp;производство.</p></li>
       </ol>
     </div>
   </div>
@@ -2845,7 +2877,7 @@
     </div>
 
     <p class="contact-note reveal">
-      Создаю контент, контролирую репутационные риски и автоматизирую рутину через ИИ. Если вашей команде нужен специалист, способный закрывать эти три направления комплексно — давайте пообщаемся.
+      Создаю контент, контролирую репутационные риски и&nbsp;автоматизирую рутину через ИИ. Если вашей команде нужен специалист, способный закрывать эти три направления комплексно&nbsp;—&nbsp;давайте пообщаемся.
     </p>
   </div>
 </section>
@@ -2857,7 +2889,7 @@
   <div class="footer-inner">
     <span>© MMXXVI<span class="egg-trigger" id="egg-trigger" title=" ">?</span> · Lifanov K. I.</span>
     <span class="footer-meta">Санкт-Петербург</span>
-    <span class="footer-legal">* Meta признана экстремистской организацией и запрещена на территории РФ</span>
+    <span class="footer-legal">* Meta признана экстремистской организацией и&nbsp;запрещена на&nbsp;территории РФ</span>
   </div>
 </footer>
 
@@ -2888,7 +2920,7 @@
     <ul class="cases-list">
       <li><a href="#case-01" data-case-pick>
         <span class="cases-num">01</span>
-        <span class="cases-title">Закрыл юридический риск <em>3,2&nbsp;млн&nbsp;₽</em> за 30&nbsp;минут</span>
+        <span class="cases-title">Закрыл юридический риск <em>3,2&nbsp;млн&nbsp;₽</em> за&nbsp;30&nbsp;минут</span>
         <span class="cases-tag">Brand&nbsp;Safety</span>
       </a></li>
       <li><a href="#case-02" data-case-pick>
@@ -2898,7 +2930,7 @@
       </a></li>
       <li><a href="#case-03" data-case-pick>
         <span class="cases-num">03</span>
-        <span class="cases-title">От медианных 6–10&nbsp;тыс. — к&nbsp;<em>700&nbsp;000+</em> просмотров</span>
+        <span class="cases-title">От&nbsp;медианных 6–10&nbsp;тыс. до&nbsp;<em>700&nbsp;000+</em> просмотров</span>
         <span class="cases-tag">Virality</span>
       </a></li>
     </ul>
@@ -2912,7 +2944,7 @@
   <div class="egg-card">
     <div class="egg-eyebrow">Hidden · found&nbsp;you</div>
     <h3 class="egg-title" id="egg-title-text">
-      Алгоритмы — это круто,<br />но ты нашёл эту кнопку, <em>потому что ты живой человек</em>.
+      Алгоритмы&nbsp;—&nbsp;это круто,<br />но&nbsp;ты нашёл эту кнопку, <em>потому что&nbsp;ты живой человек</em>.
     </h3>
     <p class="egg-text">Погнали работать.</p>
     <button class="egg-close" id="egg-close">Закрыть ✕</button>
