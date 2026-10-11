@@ -1355,12 +1355,18 @@
   /* ===============================================
      CONTACT (dark)
      =============================================== */
-  .contact {
+  .site-ending {
     min-height: 100vh;
     min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--dark);
+  }
+  .contact {
+    flex: 1;
     display: grid;
     align-items: center;
-    padding: var(--section-pad) 0;
+    padding: clamp(80px, 12vh, 140px) 0 clamp(32px, 6vh, 64px);
     text-align: center;
     background: var(--dark);
     color: #E8E2D4;
@@ -1728,14 +1734,6 @@
     height: 4px;
     background: var(--accent);
   }
-  .egg-eyebrow {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
   .egg-title {
     font-family: var(--serif);
     font-size: clamp(26px, 3.2vw, 38px);
@@ -2040,7 +2038,8 @@
     body { font-size: 11pt; background: white; color: black; }
     section { page-break-inside: avoid; padding: 20pt 0; }
     .hero { padding-top: 30pt; }
-    .contact { min-height: 0; display: block; }
+    .site-ending { min-height: 0; display: block; background: white; }
+    .contact { display: block; }
     .case-header, .case-body, .visuals { page-break-inside: avoid; }
     .visual::after { display: none; }
     a { color: black !important; text-decoration: none; }
