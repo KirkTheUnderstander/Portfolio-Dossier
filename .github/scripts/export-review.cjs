@@ -4,9 +4,10 @@ const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const sharp = require('sharp');
 const root = path.resolve('site-review');
-const url = 'https://kirktheunderstander.github.io/Portfolio-Dossier/?review=79bc3b61b3810504fb4649ba618ca7d7bb3227da';
+const exportCommit = process.env.GITHUB_SHA || null;
+const url = 'https://kirktheunderstander.github.io/Portfolio-Dossier/?review=' + encodeURIComponent(exportCommit || Date.now());
 const pause = ms => new Promise(r=>setTimeout(r,ms));
-const report = {url,commit:'79bc3b61b3810504fb4649ba618ca7d7bb3227da',errors:[],failedRequests:[],viewports:[],images:[]};
+const report = {url,exportCommit,capturedAt:new Date().toISOString(),errors:[],failedRequests:[],viewports:[],images:[]};
 async function load(page) {
   page.on('pageerror',e=>report.errors.push(e.message));
   page.on('requestfailed',r=>report.failedRequests.push({url:r.url(),reason:r.failure()?.errorText}));
