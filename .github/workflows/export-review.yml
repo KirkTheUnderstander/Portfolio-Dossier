@@ -1,0 +1,36 @@
+name: Export portfolio review
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/export-review.yml'
+      - '.github/scripts/export-review.cjs'
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install export tools
+        run: npm install --no-save --no-package-lock playwright@1.58.2 sharp@0.34.5
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Capture published site and check responsive layouts
+        run: node .github/scripts/export-review.cjs
+      - name: Store PNG review package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-gemini-review
+          path: site-review/
+          retention-days: 30
+          if-no-files-found: error
